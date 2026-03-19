@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: crud-empleados-postgres
+    environment:
+      POSTGRES_DB: ${CRUD_DB_NAME:-empleados}
+      POSTGRES_USER: ${CRUD_DB_USER:-empleados_app}
+      POSTGRES_PASSWORD: ${CRUD_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CRUD_DB_USER:-empleados_app} -d ${CRUD_DB_NAME:-empleados}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crud-empleados-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      CRUD_PROFILE: docker
+      CRUD_DB_HOST: postgres
+      CRUD_DB_PORT: 5432
+      CRUD_DB_NAME: ${CRUD_DB_NAME:-empleados}
+      CRUD_DB_USER: ${CRUD_DB_USER:-empleados_app}
+      CRUD_DB_PASSWORD: ${CRUD_DB_PASSWORD}
+      CRUD_BASIC_USER: ${CRUD_BASIC_USER}
+      CRUD_BASIC_PASSWORD: ${CRUD_BASIC_PASSWORD}
+    ports:
+      - "8080:8080"

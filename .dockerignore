@@ -1,0 +1,25 @@
+# Build output
+target/
+build/
+
+# VCS
+.git/
+
+# Local tooling
+.vscode/
+.idea/
+
+# Environment / logs
+.env
+.env.*
+*.log
+
+# Node leftovers if present
+node_modules/
+
+# Docker files
+Dockerfile*
+.dockerignore
+
+# Coverage / reports
+coverage/

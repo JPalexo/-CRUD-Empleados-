@@ -1,0 +1,210 @@
+openapi: 3.0.3
+info:
+  title: Empleados API - Employee Symbolic Login Contract
+  version: 1.2.0
+  description: |
+    Contrato funcional para alta de empleado con credenciales y login simbolico.
+    El login simbolico de empleado es publico y separado del canal administrativo Basic Auth.
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Empleados
+  - name: EmployeeLogin
+
+paths:
+  /api/v1/empleados:
+    post:
+      tags:
+        - Empleados
+      summary: Crear empleado con credenciales de login simbolico
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoCreateWithCredentialsRequest'
+      responses:
+        '201':
+          description: Empleado creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpleadoResponse'
+        '400':
+          description: Solicitud invalida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: No autenticado (canal administrativo)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Conflicto de unicidad (email ya registrado)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/empleados/login:
+    post:
+      tags:
+        - EmployeeLogin
+      summary: Login simbolico de empleado (publico)
+      description: |
+        Valida email/password del empleado y devuelve confirmacion de autenticacion.
+        No emite token ni sesion.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoLoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpleadoLoginSuccessResponse'
+        '400':
+          description: Solicitud invalida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Credenciales invalidas (respuesta generica)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    EmpleadoCreateWithCredentialsRequest:
+      type: object
+      required:
+        - nombre
+        - direccion
+        - telefono
+        - email
+        - password
+      additionalProperties: false
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        direccion:
+          type: string
+          minLength: 1
+          maxLength: 100
+        telefono:
+          type: string
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          description: Se normaliza con trim+lowercase antes de persistir.
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+          description: Debe contener al menos una letra y un numero.
+
+    EmpleadoResponse:
+      type: object
+      required:
+        - clave
+        - nombre
+        - direccion
+        - telefono
+      properties:
+        clave:
+          type: string
+          example: EMP-25
+        nombre:
+          type: string
+        direccion:
+          type: string
+        telefono:
+          type: string
+
+    EmpleadoLoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+
+    EmpleadoLoginSuccessResponse:
+      type: object
+      required:
+        - authenticated
+        - empleado
+      properties:
+        authenticated:
+          type: boolean
+          enum: [true]
+        empleado:
+          $ref: '#/components/schemas/EmpleadoLoginIdentity'
+
+    EmpleadoLoginIdentity:
+      type: object
+      required:
+        - clave
+        - nombre
+        - email
+      properties:
+        clave:
+          type: string
+          example: EMP-25
+        nombre:
+          type: string
+        email:
+          type: string
+          format: email
+          description: Email normalizado.
+
+    ApiError:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - message
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
