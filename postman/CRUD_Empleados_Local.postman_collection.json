@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "7a95b4d2-ae57-4a7f-9c5d-5d5a8f7f5b11",
     "name": "CRUD Empleados Local",
-    "description": "Collection para probar el CRUD de empleados con Basic Auth, validaciones y endpoints de documentacion.",
+    "description": "Collection para validar CRUD administrativo (Basic Auth) y login simbolico publico de empleados segun la spec actual.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -487,6 +487,56 @@
           }
         },
         {
+          "name": "POST Alta duplicada por email (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 409', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.test('Conflict message references email uniqueness', function () {",
+                  "  pm.expect(data.message).to.include('email');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ana Duplicada\",\n  \"direccion\": \"Calle 987\",\n  \"telefono\": \"5511111111\",\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/empleados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "empleados"
+              ]
+            },
+            "description": "Ejecutar despues de 'POST Crear empleado (201)' para validar el conflicto por email ya registrado."
+          }
+        },
+        {
           "name": "GET Clave con ceros a la izquierda (400)",
           "event": [
             {
@@ -616,6 +666,59 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{empleadoEmailNormalizado}}\",\n  \"password\": \"{{empleadoPasswordInvalido}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/empleados/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "empleados",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST Login simbolico payload invalido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.test('Validation message includes missing field', function () {",
+                  "  pm.expect(data.message).to.include('email');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
               "options": {
                 "raw": {
                   "language": "json"
