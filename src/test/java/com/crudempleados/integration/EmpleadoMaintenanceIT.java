@@ -18,8 +18,9 @@ class EmpleadoMaintenanceIT extends AbstractApiIntegrationTest {
     @Test
     void shouldPersistUpdatedMutableFields() throws Exception {
         Empleado empleado = seedEmpleado("Nombre U1", "Direccion U1", "Telefono U1");
+        String departamentoClave = seedDepartamentoClave("Dept U1");
         String clave = "EMP-" + empleado.getClaveNumero();
-        Map<String, Object> updatePayload = EmpleadoTestDataFactory.updateRequest("U1");
+        Map<String, Object> updatePayload = EmpleadoTestDataFactory.updateRequest("U1", departamentoClave);
 
         mockMvc.perform(put("/api/v1/empleados/{clave}", clave)
                 .header("Authorization", basicAuthHeaderValue())
@@ -31,7 +32,8 @@ class EmpleadoMaintenanceIT extends AbstractApiIntegrationTest {
         mockMvc.perform(get("/api/v1/empleados/{clave}", clave)
                 .header("Authorization", basicAuthHeaderValue()))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.direccion").value("Nueva direccion U1"));
+            .andExpect(jsonPath("$.direccion").value("Nueva direccion U1"))
+            .andExpect(jsonPath("$.departamentoClave").value(departamentoClave));
     }
 
     @Test

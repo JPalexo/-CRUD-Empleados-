@@ -18,7 +18,8 @@ class EmpleadoCreateLoginSlaIT extends AbstractApiIntegrationTest {
     void shouldCompleteCreateToFirstLoginWithinSixtySeconds() throws Exception {
         String email = "empleado.sla@empresa.com";
         String password = "abc12345";
-        Map<String, Object> createPayload = EmpleadoTestDataFactory.createRequestWithCredentials("SLA1", email, password);
+        String departamentoClave = seedDepartamentoClave("Dept SLA");
+        Map<String, Object> createPayload = EmpleadoTestDataFactory.createRequestWithCredentials("SLA1", email, password, departamentoClave);
 
         Instant start = Instant.now();
 

@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.crudempleados.model.Departamento;
 import com.crudempleados.model.Empleado;
 import com.crudempleados.support.AbstractApiIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,10 @@ class EmpleadoQueryApiTest extends AbstractApiIntegrationTest {
 
     @Test
     void shouldListAndFetchEmpleadoByClave() throws Exception {
+        Departamento departamento = seedDepartamento("Dept Q1");
+        String departamentoClave = "DEP-" + departamento.getClaveNumero();
         Empleado first = seedEmpleado("Nombre Q1", "Direccion Q1", "Telefono Q1");
+        assignEmpleadoToDepartamento(first, departamento);
         seedEmpleado("Nombre Q2", "Direccion Q2", "Telefono Q2");
         String clave = "EMP-" + first.getClaveNumero();
 
@@ -31,7 +35,8 @@ class EmpleadoQueryApiTest extends AbstractApiIntegrationTest {
                 .header("Authorization", basicAuthHeaderValue()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.clave").value(clave))
-            .andExpect(jsonPath("$.nombre").value("Nombre Q1"));
+            .andExpect(jsonPath("$.nombre").value("Nombre Q1"))
+            .andExpect(jsonPath("$.departamentoClave").value(departamentoClave));
     }
 
     @Test

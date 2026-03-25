@@ -17,8 +17,9 @@ class EmpleadoCreateCredentialsIT extends AbstractApiIntegrationTest {
 
     @Test
     void shouldPersistCredentialWithNormalizedEmailAndHashedPassword() throws Exception {
+        String departamentoClave = seedDepartamentoClave("Dept CRED1");
         Map<String, Object> payload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "CRED1", "  EMPLEADO.CRED1@EMPRESA.COM ", "abc12345");
+            "CRED1", "  EMPLEADO.CRED1@EMPRESA.COM ", "abc12345", departamentoClave);
 
         MvcResult result = mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
@@ -43,10 +44,11 @@ class EmpleadoCreateCredentialsIT extends AbstractApiIntegrationTest {
 
     @Test
     void shouldRollbackEmployeeCreationWhenDuplicateEmailCausesCredentialConflict() throws Exception {
+        String departamentoClave = seedDepartamentoClave("Dept CRED2");
         Map<String, Object> first = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "CRED2A", "dup.atomic@empresa.com", "abc12345");
+            "CRED2A", "dup.atomic@empresa.com", "abc12345", departamentoClave);
         Map<String, Object> duplicate = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "CRED2B", "  DUP.ATOMIC@EMPRESA.COM ", "abc12345");
+            "CRED2B", "  DUP.ATOMIC@EMPRESA.COM ", "abc12345", departamentoClave);
 
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())

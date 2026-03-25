@@ -31,10 +31,11 @@ class EmpleadoCreateSequenceIT extends AbstractApiIntegrationTest {
     }
 
     private long createAndExtractKey(String seed) throws Exception {
+        String departamentoClave = seedDepartamentoClave("Dept " + seed);
         MvcResult result = mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(EmpleadoTestDataFactory.createRequest(seed))))
+            .content(objectMapper.writeValueAsString(EmpleadoTestDataFactory.createRequest(seed, departamentoClave))))
             .andExpect(status().isCreated())
             .andReturn();
 

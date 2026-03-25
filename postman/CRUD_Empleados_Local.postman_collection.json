@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "7a95b4d2-ae57-4a7f-9c5d-5d5a8f7f5b11",
-    "name": "CRUD Empleados Local",
-    "description": "Collection para validar CRUD administrativo (Basic Auth) y login simbolico publico de empleados segun la spec actual.",
+    "name": "CRUD-Empleados-&-Departamentos",
+    "description": "Collection para validar CRUD administrativo (Basic Auth) de empleados y departamentos, y login simbolico publico de empleados.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -23,7 +23,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8080"
+      "value": "http://localhost:8081"
     },
     {
       "key": "user",
@@ -64,9 +64,228 @@
     {
       "key": "empleadoPasswordInvalido",
       "value": "wrong123"
+    },
+    {
+      "key": "departamentoClave",
+      "value": ""
     }
   ],
   "item": [
+    {
+      "name": "00 - Secuencia E2E (orden recomendado)",
+      "description": "Ejecutar requests en este folder de arriba hacia abajo. Primero crea departamento, luego empleado con ese departamento y finalmente valida login y limpieza.",
+      "item": [
+        {
+          "name": "01 POST Crear departamento base (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('departamentoClave', data.clave);",
+                  "pm.environment.set('departamentoClave', data.clave);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Depto Flujo E2E\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "02 POST Crear empleado con departamento (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('clave', data.clave);",
+                  "pm.environment.set('clave', data.clave);",
+                  "pm.test('Response includes assigned departamentoClave', function () {",
+                  "  pm.expect(data.departamentoClave).to.eql(pm.variables.get('departamentoClave'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ana Flujo\",\n  \"direccion\": \"Calle Flujo 100\",\n  \"telefono\": \"5510101010\",\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\",\n  \"departamentoClave\": \"{{departamentoClave}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/empleados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "empleados"
+              ]
+            }
+          }
+        },
+        {
+          "name": "03 GET Detalle empleado creado (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.test('Detalle includes assigned departamentoClave', function () {",
+                  "  pm.expect(data.departamentoClave).to.eql(pm.variables.get('departamentoClave'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/empleados/{{clave}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "empleados",
+                "{{clave}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "04 POST Login simbolico empleado (200)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/empleados/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "empleados",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "05 DELETE Empleado creado (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/empleados/{{clave}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "empleados",
+                "{{clave}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "06 DELETE Departamento creado (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos/{{departamentoClave}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos",
+                "{{departamentoClave}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
     {
       "name": "01 - Smoke CRUD",
       "item": [
@@ -132,6 +351,9 @@
                   "pm.environment.set('clave', data.clave);",
                   "pm.test('Clave generada con prefijo EMP-', function () {",
                   "  pm.expect(data.clave).to.match(/^EMP-[1-9][0-9]*$/);",
+                  "});",
+                  "pm.test('Response includes assigned departamentoClave', function () {",
+                  "  pm.expect(data.departamentoClave).to.eql(pm.variables.get('departamentoClave'));",
                   "});"
                 ]
               }
@@ -147,7 +369,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Ana Postman\",\n  \"direccion\": \"Calle 123\",\n  \"telefono\": \"5512345678\",\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\"\n}",
+              "raw": "{\n  \"nombre\": \"Ana Postman\",\n  \"direccion\": \"Calle 123\",\n  \"telefono\": \"5512345678\",\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\",\n  \"departamentoClave\": \"{{departamentoClave}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -177,6 +399,11 @@
                 "exec": [
                   "pm.test('Status code is 200', function () {",
                   "  pm.response.to.have.status(200);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.test('Response includes assigned departamentoClave', function () {",
+                  "  pm.expect(data).to.have.property('departamentoClave');",
+                  "  pm.expect(data.departamentoClave).to.eql(pm.variables.get('departamentoClave'));",
                   "});"
                 ]
               }
@@ -209,6 +436,16 @@
                 "exec": [
                   "pm.test('Status code is 200', function () {",
                   "  pm.response.to.have.status(200);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.test('Response includes mutable fields', function () {",
+                  "  pm.expect(data).to.have.property('nombre');",
+                  "  pm.expect(data).to.have.property('direccion');",
+                  "  pm.expect(data).to.have.property('telefono');",
+                  "});",
+                  "pm.test('Response includes departamentoClave', function () {",
+                  "  pm.expect(data).to.have.property('departamentoClave');",
+                  "  pm.expect(data.departamentoClave).to.eql(pm.variables.get('departamentoClave'));",
                   "});"
                 ]
               }
@@ -224,7 +461,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Ana Actualizada\",\n  \"direccion\": \"Calle 456\",\n  \"telefono\": \"5599999999\"\n}",
+              "raw": "{\n  \"nombre\": \"Ana Actualizada\",\n  \"direccion\": \"Calle 456\",\n  \"telefono\": \"5599999999\",\n  \"departamentoClave\": \"{{departamentoClave}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -515,7 +752,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Ana Duplicada\",\n  \"direccion\": \"Calle 987\",\n  \"telefono\": \"5511111111\",\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\"\n}",
+              "raw": "{\n  \"nombre\": \"Ana Duplicada\",\n  \"direccion\": \"Calle 987\",\n  \"telefono\": \"5511111111\",\n  \"email\": \"{{empleadoEmailRaw}}\",\n  \"password\": \"{{empleadoPassword}}\",\n  \"departamentoClave\": \"{{departamentoClave}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -735,6 +972,171 @@
                 "{{apiVersion}}",
                 "empleados",
                 "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - CRUD departamentos",
+      "item": [
+        {
+          "name": "GET Listar departamentos (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST Crear departamento (201) y guardar clave",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('departamentoClave', data.clave);",
+                  "pm.environment.set('departamentoClave', data.clave);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Departamento Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Detalle departamento (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos/{{departamentoClave}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos",
+                "{{departamentoClave}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar departamento (200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Departamento Postman Edit\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos/{{departamentoClave}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos",
+                "{{departamentoClave}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar departamento (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/departamentos/{{departamentoClave}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "{{apiVersion}}",
+                "departamentos",
+                "{{departamentoClave}}"
               ]
             }
           }

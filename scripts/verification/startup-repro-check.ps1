@@ -5,6 +5,9 @@ param(
 
 $successCount = 0
 $failureCount = 0
+$backendContainerName = "crud-empleados-003-backend"
+$postgresContainerName = "crud-empleados-003-postgres"
+$backendPort = if ($env:CRUD_APP_PORT) { $env:CRUD_APP_PORT } else { "8081" }
 
 function Get-HttpStatusCode {
     param(
@@ -37,17 +40,17 @@ function Get-HttpStatusCode {
 }
 
 function Test-BackendHttpReady {
-    $status = Get-HttpStatusCode -Uri "http://localhost:8080/v3/api-docs" -Method "GET"
+    $status = Get-HttpStatusCode -Uri "http://localhost:$backendPort/v3/api-docs" -Method "GET"
     return $status -eq 401 -or $status -eq 200
 }
 
 function Test-EmployeeLoginPublicRoute {
-    $status = Get-HttpStatusCode -Uri "http://localhost:8080/api/v1/empleados/login" -Method "POST" -Body "{}" -ContentType "application/json"
+    $status = Get-HttpStatusCode -Uri "http://localhost:$backendPort/api/v1/empleados/login" -Method "POST" -Body "{}" -ContentType "application/json"
     return $status -eq 400
 }
 
 function Test-AdminCrudProtected {
-    $status = Get-HttpStatusCode -Uri "http://localhost:8080/api/v1/empleados" -Method "GET"
+    $status = Get-HttpStatusCode -Uri "http://localhost:$backendPort/api/v1/empleados" -Method "GET"
     return $status -eq 401
 }
 
@@ -74,8 +77,8 @@ for ($cycle = 1; $cycle -le $Cycles; $cycle++) {
         Start-Sleep -Seconds 2
 
         $psOutput = docker compose ps
-        $backendRunning = $psOutput -match "crud-empleados-backend" -and $psOutput -match "Up"
-        $postgresRunning = $psOutput -match "crud-empleados-postgres" -and $psOutput -match "Up"
+        $backendRunning = $psOutput -match $backendContainerName -and $psOutput -match "Up"
+        $postgresRunning = $psOutput -match $postgresContainerName -and $psOutput -match "Up"
 
         if (-not $backendRunning -or -not $postgresRunning) {
             continue

@@ -46,10 +46,12 @@ pwsh .\scripts\verification\java17-build-check.ps1
 ## 3) Levantar contenedores
 
 ```powershell
-docker compose up -d --build
+docker compose up -d postgres
+docker compose up -d --build backend
 docker compose ps
 ```
 
+Nota: si hiciste cambios de codigo recientes, usa siempre `--build` para evitar ejecutar una imagen backend desactualizada.
 Resultado esperado:
 
 - `postgres` en estado `healthy`.
@@ -58,25 +60,35 @@ Resultado esperado:
 
 ## 4) Verificar seguridad en documentacion
 
-- `http://localhost:8080/swagger-ui/index.html`
-- `http://localhost:8080/v3/api-docs`
+- `http://localhost:8081/swagger-ui/index.html`
+- `http://localhost:8081/v3/api-docs`
 
 Sin credenciales debe responder `401`.
 
 ## 5) Validar CRUD versionado (`/api/v1/empleados`)
 
+Crear departamento base (requisito para alta de empleado):
+
+```powershell
+curl.exe -u admin:admin123 -X POST "http://localhost:8081/api/v1/departamentos" -H "Content-Type: application/json" -d "{\"nombre\":\"Departamento Base Empleados\"}"
+```
+
+Guardar la `clave` devuelta (ejemplo: `DEP-1`) y usarla en `departamentoClave`.
+
 Crear empleado (sin `clave`):
 
 ```powershell
-curl.exe -u admin:admin123 -X POST "http://localhost:8080/api/v1/empleados" -H "Content-Type: application/json" -d "{\"nombre\":\"Ana Lopez\",\"direccion\":\"Calle 123\",\"telefono\":\"5512345678\"}"
+curl.exe -u admin:admin123 -X POST "http://localhost:8081/api/v1/empleados" -H "Content-Type: application/json" -d "{\"nombre\":\"Ana Lopez\",\"direccion\":\"Calle 123\",\"telefono\":\"5512345678\",\"email\":\"ana.lopez@empresa.com\",\"password\":\"abc12345\",\"departamentoClave\":\"DEP-1\"}"
 ```
 
 Resultado esperado: `201 Created` con `clave` en formato `EMP-{numero}`.
 
+La respuesta de create y detalle debe incluir tambien `departamentoClave` con formato `DEP-{numero}` del departamento asignado.
+
 Obtener listado paginado (primera pagina explicita):
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/v1/empleados?page=0&size=10"
+curl.exe -u admin:admin123 "http://localhost:8081/api/v1/empleados?page=0&size=10"
 ```
 
 Resultado esperado: sobre con forma `{ "data": [...], "pagination": {"page":0,"size":10,"totalElements":...,"totalPages":...} }`.
@@ -84,19 +96,21 @@ Resultado esperado: sobre con forma `{ "data": [...], "pagination": {"page":0,"s
 Obtener detalle:
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/v1/empleados/EMP-1"
+curl.exe -u admin:admin123 "http://localhost:8081/api/v1/empleados/EMP-1"
 ```
 
 Actualizar:
 
 ```powershell
-curl.exe -u admin:admin123 -X PUT "http://localhost:8080/api/v1/empleados/EMP-1" -H "Content-Type: application/json" -d "{\"nombre\":\"Ana L.\",\"direccion\":\"Calle 456\",\"telefono\":\"5599999999\"}"
+curl.exe -u admin:admin123 -X PUT "http://localhost:8081/api/v1/empleados/EMP-1" -H "Content-Type: application/json" -d "{\"nombre\":\"Ana L.\",\"direccion\":\"Calle 456\",\"telefono\":\"5599999999\",\"departamentoClave\":\"DEP-2\"}"
 ```
+
+`departamentoClave` es opcional en update. Si se envia, el sistema reasigna el empleado al departamento indicado (debe existir y tener formato `DEP-{numero}`).
 
 Eliminar:
 
 ```powershell
-curl.exe -u admin:admin123 -X DELETE "http://localhost:8080/api/v1/empleados/EMP-1"
+curl.exe -u admin:admin123 -X DELETE "http://localhost:8081/api/v1/empleados/EMP-1"
 ```
 
 ## 6) Validar defaults y reglas de paginacion
@@ -104,13 +118,13 @@ curl.exe -u admin:admin123 -X DELETE "http://localhost:8080/api/v1/empleados/EMP
 Falta `page` (debe aplicar `page=0`):
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/v1/empleados?size=10"
+curl.exe -u admin:admin123 "http://localhost:8081/api/v1/empleados?size=10"
 ```
 
 Falta `size` (debe aplicar `size=10`):
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/v1/empleados?page=0"
+curl.exe -u admin:admin123 "http://localhost:8081/api/v1/empleados?page=0"
 ```
 
 Paginacion invalida (`page=-1` o `size=0`) debe responder `400`.
@@ -120,25 +134,31 @@ Paginacion invalida (`page=-1` o `size=0`) debe responder `400`.
 Alta con `clave` manual (debe responder `400`):
 
 ```powershell
-curl.exe -u admin:admin123 -X POST "http://localhost:8080/api/v1/empleados" -H "Content-Type: application/json" -d "{\"clave\":\"EMP-999\",\"nombre\":\"Invalido\",\"direccion\":\"X\",\"telefono\":\"Y\"}"
+curl.exe -u admin:admin123 -X POST "http://localhost:8081/api/v1/empleados" -H "Content-Type: application/json" -d "{\"clave\":\"EMP-999\",\"nombre\":\"Invalido\",\"direccion\":\"X\",\"telefono\":\"Y\",\"email\":\"invalido@empresa.com\",\"password\":\"abc12345\",\"departamentoClave\":\"DEP-1\"}"
+```
+
+Alta sin `departamentoClave` (debe responder `400`):
+
+```powershell
+curl.exe -u admin:admin123 -X POST "http://localhost:8081/api/v1/empleados" -H "Content-Type: application/json" -d "{\"nombre\":\"Sin Depto\",\"direccion\":\"X\",\"telefono\":\"Y\",\"email\":\"sin.depto@empresa.com\",\"password\":\"abc12345\"}"
 ```
 
 Clave con ceros a la izquierda (debe responder `400`):
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/v1/empleados/EMP-0007"
+curl.exe -u admin:admin123 "http://localhost:8081/api/v1/empleados/EMP-0007"
 ```
 
 Ruta sin version (debe responder `404`):
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/empleados"
+curl.exe -u admin:admin123 "http://localhost:8081/api/empleados"
 ```
 
 Version no publicada (debe responder `404`):
 
 ```powershell
-curl.exe -u admin:admin123 "http://localhost:8080/api/v2/empleados"
+curl.exe -u admin:admin123 "http://localhost:8081/api/v2/empleados"
 ```
 
 ## 8) Verificar reproducibilidad de arranque

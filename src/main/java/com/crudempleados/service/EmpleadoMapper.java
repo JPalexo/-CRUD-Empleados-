@@ -21,7 +21,15 @@ public class EmpleadoMapper {
             claveCodec.format(id),
             empleado.getNombre(),
             empleado.getDireccion(),
-            empleado.getTelefono()
+            empleado.getTelefono(),
+            formatDepartamentoClave(empleado)
         );
+    }
+
+    private String formatDepartamentoClave(Empleado empleado) {
+        if (empleado.getDepartamentoClavePrefijo() == null || empleado.getDepartamentoClaveNumero() == null) {
+            return null;
+        }
+        return empleado.getDepartamentoClavePrefijo() + empleado.getDepartamentoClaveNumero();
     }
 }

@@ -18,8 +18,9 @@ class EmpleadoLoginAttemptPolicyIT extends AbstractApiIntegrationTest {
     @Test
     void shouldKeepAccountUnlockedAfterFiveFailuresAndLogEachAttempt() throws Exception {
         String email = "empleado.policy@empresa.com";
+        String departamentoClave = seedDepartamentoClave("Dept POL1");
         Map<String, Object> createPayload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "POL1", email, "abc12345");
+            "POL1", email, "abc12345", departamentoClave);
 
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
