@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
 **Tests**: The examples below include test tasks. Tests for authentication behavior,
-Flyway migrations, and critical endpoint flows are REQUIRED by constitution.
+Flyway migrations, frontend lint/build, and critical endpoint flows are REQUIRED by constitution.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -22,9 +22,10 @@ Flyway migrations, and critical endpoint flows are REQUIRED by constitution.
 ## Path Conventions
 
 - **Spring Boot app**: `src/main/java/`, `src/main/resources/`, `src/test/java/`
+- **Angular app**: `frontend/src/app/`, `frontend/src/environments/`
 - **Migrations**: `src/main/resources/db/migration/`
 - **Docker assets**: `docker/compose/` or repository-root `docker-compose.yml`
-- Paths shown below assume a single backend service - adjust if modules are used
+- Paths shown below assume a backend + Angular frontend structure - adjust if modules are used
 
 <!-- 
   ============================================================================
@@ -50,8 +51,8 @@ Flyway migrations, and critical endpoint flows are REQUIRED by constitution.
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create/verify Spring Boot 3 + Java 17 project structure per implementation plan
-- [ ] T002 Initialize core dependencies (web, security, data-jpa, flyway, postgresql, springdoc-openapi)
-- [ ] T003 [P] Configure build and quality tooling (Maven/Gradle checks, style, static analysis)
+- [ ] T002 Initialize core dependencies (web, security, data-jpa, flyway, postgresql, springdoc-openapi, Angular 22)
+- [ ] T003 [P] Configure build and quality tooling (backend checks, frontend lint/build)
 - [ ] T004 [P] Create local container runtime files for PostgreSQL (Docker Compose)
 
 ---
@@ -70,7 +71,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T008 [P] Setup global error handling and validation response model
 - [ ] T009 Create shared base entities/repositories used across stories
 - [ ] T010 [P] Enable Swagger/OpenAPI generation and Swagger UI endpoint
-- [ ] T011 Validate Dockerized PostgreSQL startup and application DB connectivity
+- [ ] T011 [P] Setup Angular feature modular skeleton (pages, components, services, models, guards/interceptors)
+- [ ] T012 [P] Setup frontend environment profiles and centralized HTTP error/loading handling
+- [ ] T013 Validate Dockerized local integration (frontend + backend + PostgreSQL) and API connectivity
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -86,17 +89,20 @@ Examples of foundational tasks (adjust based on your project):
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T012 [P] [US1] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
-- [ ] T013 [P] [US1] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
+- [ ] T014 [P] [US1] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
+- [ ] T015 [P] [US1] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
+- [ ] T016 [P] [US1] Frontend lint/build validation for story scope in frontend/
 
 ### Implementation for User Story 1
 
-- [ ] T014 [P] [US1] Create [Entity1] in src/main/java/.../model/[Entity1].java
-- [ ] T015 [P] [US1] Create [Entity2] in src/main/java/.../model/[Entity2].java
-- [ ] T016 [US1] Implement [Service] in src/main/java/.../service/[Service].java (depends on T014, T015)
-- [ ] T017 [US1] Implement [endpoint/feature] in src/main/java/.../controller/[Controller].java
-- [ ] T018 [US1] Add request/response validation and exception mapping
-- [ ] T019 [US1] Update OpenAPI annotations/spec for user story 1 endpoints
+- [ ] T017 [P] [US1] Create [Entity1] in src/main/java/.../model/[Entity1].java
+- [ ] T018 [P] [US1] Create [Entity2] in src/main/java/.../model/[Entity2].java
+- [ ] T019 [US1] Implement [Service] in src/main/java/.../service/[Service].java (depends on T017, T018)
+- [ ] T020 [US1] Implement [endpoint/feature] in src/main/java/.../controller/[Controller].java
+- [ ] T021 [US1] Add request/response validation and exception mapping
+- [ ] T022 [US1] Implement typed frontend service + page/component flow in frontend/src/app/
+- [ ] T023 [US1] Align frontend form validation and accessibility baseline for story flows
+- [ ] T024 [US1] Update OpenAPI annotations/spec for user story 1 endpoints
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -110,16 +116,18 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T020 [P] [US2] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
-- [ ] T021 [P] [US2] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
+- [ ] T025 [P] [US2] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
+- [ ] T026 [P] [US2] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
+- [ ] T027 [P] [US2] Frontend lint/build validation for story scope in frontend/
 
 ### Implementation for User Story 2
 
-- [ ] T022 [P] [US2] Create/update entity in src/main/java/.../model/[Entity].java
-- [ ] T023 [US2] Implement service logic in src/main/java/.../service/[Service].java
-- [ ] T024 [US2] Implement endpoint in src/main/java/.../controller/[Controller].java
-- [ ] T025 [US2] Add or update Flyway migration if schema changes
-- [ ] T026 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T028 [P] [US2] Create/update entity in src/main/java/.../model/[Entity].java
+- [ ] T029 [US2] Implement service logic in src/main/java/.../service/[Service].java
+- [ ] T030 [US2] Implement endpoint in src/main/java/.../controller/[Controller].java
+- [ ] T031 [US2] Add or update Flyway migration if schema changes
+- [ ] T032 [US2] Implement typed frontend integrations and responsive UI updates
+- [ ] T033 [US2] Integrate with User Story 1 components (if needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -133,15 +141,17 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T027 [P] [US3] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
-- [ ] T028 [P] [US3] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
+- [ ] T034 [P] [US3] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
+- [ ] T035 [P] [US3] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
+- [ ] T036 [P] [US3] Frontend lint/build validation for story scope in frontend/
 
 ### Implementation for User Story 3
 
-- [ ] T029 [P] [US3] Create/update entity in src/main/java/.../model/[Entity].java
-- [ ] T030 [US3] Implement service in src/main/java/.../service/[Service].java
-- [ ] T031 [US3] Implement endpoint in src/main/java/.../controller/[Controller].java
-- [ ] T032 [US3] Update Swagger/OpenAPI and migration artifacts as applicable
+- [ ] T037 [P] [US3] Create/update entity in src/main/java/.../model/[Entity].java
+- [ ] T038 [US3] Implement service in src/main/java/.../service/[Service].java
+- [ ] T039 [US3] Implement endpoint in src/main/java/.../controller/[Controller].java
+- [ ] T040 [US3] Implement frontend models/pages/components with typed API services
+- [ ] T041 [US3] Update Swagger/OpenAPI and migration artifacts as applicable
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -159,6 +169,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit/integration tests in src/test/java/
+- [ ] TXXX [P] Frontend accessibility and responsive validation in frontend/
 - [ ] TXXX Security hardening and auth rule review
 - [ ] TXXX Validate Flyway history and rollback/readiness notes
 - [ ] TXXX Verify Swagger/OpenAPI publication and endpoint accuracy

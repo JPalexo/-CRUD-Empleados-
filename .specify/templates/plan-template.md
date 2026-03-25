@@ -17,16 +17,16 @@
   the iteration process.
 -->
 
-**Language/Version**: [Java 17 (mandatory)]  
+**Language/Version**: [Java 17 (backend mandatory), TypeScript strict mode (frontend mandatory)]  
 **Primary Dependencies**: [Spring Boot 3.x, Spring Security, Spring Data JPA,
-Flyway, springdoc-openapi, PostgreSQL driver]  
+Flyway, springdoc-openapi, PostgreSQL driver, Angular 22 LTS, RxJS]  
 **Storage**: [PostgreSQL (mandatory)]  
-**Testing**: [JUnit 5, Spring Boot Test, MockMvc, Testcontainers or Docker Compose-backed integration tests]  
-**Target Platform**: [Linux container runtime / JVM server]
-**Project Type**: [Backend REST API (Spring Boot)]  
+**Testing**: [JUnit 5, Spring Boot Test, MockMvc, frontend unit/integration tests, Testcontainers or Docker Compose-backed integration tests]  
+**Target Platform**: [Linux container runtime / JVM server + browser frontend]
+**Project Type**: [Full-stack: Spring Boot backend + Angular frontend]  
 **Performance Goals**: [e.g., API latency and throughput targets per feature]  
 **Constraints**: [Must keep Basic Auth, Flyway migrations, Dockerized local Postgres,
-and Swagger/OpenAPI in sync with code]  
+Angular 22 LTS baseline, and Swagger/OpenAPI in sync with code]  
 **Scale/Scope**: [e.g., number of endpoints, entities, expected concurrent users]
 
 ## Constitution Check
@@ -34,10 +34,13 @@ and Swagger/OpenAPI in sync with code]
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 - [ ] Stack gate: proposal remains on Spring Boot 3.x + Java 17.
+- [ ] Frontend gate: proposal uses Angular 22 LTS with strict TypeScript.
 - [ ] Security gate: all non-public endpoints enforce Basic Authentication.
 - [ ] Data gate: schema changes are defined as Flyway migrations for PostgreSQL.
 - [ ] Runtime gate: local integration path includes Dockerized PostgreSQL.
+- [ ] Integration gate: frontend-backend verification is planned in local Docker workflow.
 - [ ] Contract gate: OpenAPI/Swagger updates are planned for every API change.
+- [ ] API consumption gate: frontend service layer consumes versioned /api/v1 endpoints.
 - [ ] Verification gate: tests cover auth behavior, data migration path, and key API flows.
 
 ## Project Structure
@@ -79,6 +82,17 @@ src/
   │   ├── unit/
   │   └── integration/
   └── resources/
+
+frontend/
+├── src/app/
+│   ├── pages/
+│   ├── components/
+│   ├── services/
+│   ├── models/
+│   └── core/
+│       ├── guards/
+│       └── interceptors/
+└── src/environments/
 
 docker/
 └── compose/

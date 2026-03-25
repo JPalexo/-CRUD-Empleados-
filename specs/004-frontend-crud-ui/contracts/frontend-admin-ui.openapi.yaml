@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+  title: Frontend Admin UI Integration Contract
+  version: 1.0.0
+  description: |
+    Contract of backend endpoints consumed by the Angular admin UI for
+    empleados/departamentos CRUD and assignment flows.
+servers:
+  - url: http://localhost:8081
+security:
+  - basicAuth: []
+paths:
+  /api/v1/empleados:
+    get:
+      summary: List empleados
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Paginated empleados list
+    post:
+      summary: Create empleado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoCreateRequest'
+      responses:
+        '201':
+          description: Empleado created
+        '400':
+          description: Validation error
+        '409':
+          description: Business conflict
+  /api/v1/empleados/{clave}:
+    parameters:
+      - in: path
+        name: clave
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get empleado detail
+      responses:
+        '200':
+          description: Empleado detail
+        '404':
+          description: Not found
+    put:
+      summary: Update empleado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoUpdateRequest'
+      responses:
+        '200':
+          description: Empleado updated
+        '409':
+          description: Concurrency or business conflict
+    delete:
+      summary: Delete empleado
+      responses:
+        '204':
+          description: Empleado deleted
+        '404':
+          description: Not found
+  /api/v1/empleados/login:
+    post:
+      summary: Empleado/admin login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login accepted
+        '401':
+          description: Invalid credentials
+  /api/v1/departamentos:
+    get:
+      summary: List departamentos with occupancy metrics
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Paginated departamentos list
+        '400':
+          description: Invalid paging input
+    post:
+      summary: Create departamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartamentoWriteRequest'
+      responses:
+        '201':
+          description: Departamento created
+        '409':
+          description: Business conflict
+  /api/v1/departamentos/{clave}:
+    parameters:
+      - in: path
+        name: clave
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get departamento detail
+      responses:
+        '200':
+          description: Departamento detail
+        '404':
+          description: Not found
+    put:
+      summary: Update departamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartamentoWriteRequest'
+      responses:
+        '200':
+          description: Departamento updated
+        '409':
+          description: Conflict
+    delete:
+      summary: Delete departamento
+      responses:
+        '204':
+          description: Departamento deleted
+        '409':
+          description: Conflict when linked empleados exist
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    EmpleadoCreateRequest:
+      type: object
+      required: [nombre, apellido, email, password, departamentoClave]
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        departamentoClave:
+          type: string
+    EmpleadoUpdateRequest:
+      type: object
+      required: [nombre, apellido, email]
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+        departamentoClave:
+          type: string
+    DepartamentoWriteRequest:
+      type: object
+      required: [nombre]
+      properties:
+        nombre:
+          type: string

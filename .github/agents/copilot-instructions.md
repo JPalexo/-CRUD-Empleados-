@@ -1,6 +1,6 @@
 # CRUD_Empleados_2 Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-03-24
+Auto-generated from all feature plans. Last updated: 2026-03-25
 
 ## Active Technologies
 - Java 17 + Spring Boot 3.x, Spring Security, Spring Data JPA, Flyway, springdoc-openapi, PostgreSQL Driver (001-crud-empleados)
@@ -12,6 +12,8 @@ Auto-generated from all feature plans. Last updated: 2026-03-24
 - Java 17 + Spring Boot 3.3.x, Spring Security, Spring Data JPA, Bean Validation, Flyway, springdoc-openapi (003-crud-departamentos)
 - Java 17 + Spring Boot 3.x, Spring Web, Spring Security, Spring Data JPA, Flyway, springdoc-openapi (003-crud-departamentos)
 - PostgreSQL 16 (entorno local via Docker Compose) (003-crud-departamentos)
+- Java 17 (backend), TypeScript strict mode (frontend Angular 22 LTS) + Spring Boot 3.x, Spring Security Basic Auth, Spring Data JPA, Flyway, springdoc-openapi, PostgreSQL driver, Angular 22, RxJS (004-frontend-crud-ui)
+- PostgreSQL (sin cambios de esquema planificados para esta feature) (004-frontend-crud-ui)
 
 - Java 17 + Spring Boot 3.3.x (web, security, data-jpa), Flyway, (001-crud-empleados)
 
@@ -31,7 +33,7 @@ tests/
 Java 17: Follow standard conventions
 
 ## Recent Changes
-- 003-crud-departamentos: Added Java 17 + Spring Boot 3.x, Spring Web, Spring Security, Spring Data JPA, Flyway, springdoc-openapi
+- 004-frontend-crud-ui: Added Java 17 (backend), TypeScript strict mode (frontend Angular 22 LTS) + Spring Boot 3.x, Spring Security Basic Auth, Spring Data JPA, Flyway, springdoc-openapi, PostgreSQL driver, Angular 22, RxJS
 - 003-crud-departamentos: Added Java 17 + Spring Boot 3.x, Spring Web, Spring Security, Spring Data JPA, Flyway, springdoc-openapi
 - 003-crud-departamentos: Added Java 17 + Spring Boot 3.x, Spring Web, Spring Security, Spring Data JPA, Flyway, springdoc-openapi
 
