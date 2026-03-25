@@ -63,7 +63,8 @@ class EmpleadoLoginApiTest extends AbstractApiIntegrationTest {
     }
 
     private void createEmpleadoConCredenciales(String seed, String email, String password) throws Exception {
-        Map<String, Object> payload = EmpleadoTestDataFactory.createRequestWithCredentials(seed, email, password);
+        String departamentoClave = seedDepartamentoClave("Dept " + seed);
+        Map<String, Object> payload = EmpleadoTestDataFactory.createRequestWithCredentials(seed, email, password, departamentoClave);
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
                 .contentType(APPLICATION_JSON)

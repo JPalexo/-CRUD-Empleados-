@@ -11,6 +11,8 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, EmpleadoId> 
 
 	Page<Empleado> findAllByOrderByClaveNumeroAsc(Pageable pageable);
 
+	long countByDepartamentoClavePrefijoAndDepartamentoClaveNumero(String prefijo, Long numero);
+
 	@Query(value = "SELECT nextval('empleados_clave_numero_seq')", nativeQuery = true)
 	Long nextClaveNumero();
 }

@@ -9,18 +9,19 @@ public final class EmpleadoTestDataFactory {
     private EmpleadoTestDataFactory() {
     }
 
-    public static Map<String, Object> createRequest(String seed) {
+    public static Map<String, Object> createRequest(String seed, String departamentoClave) {
         String email = ("empleado." + seed + "@empresa.com").toLowerCase(Locale.ROOT);
-        return createRequestWithCredentials(seed, email, "abc12345");
+        return createRequestWithCredentials(seed, email, "abc12345", departamentoClave);
     }
 
-    public static Map<String, Object> createRequestWithCredentials(String seed, String email, String password) {
+    public static Map<String, Object> createRequestWithCredentials(String seed, String email, String password, String departamentoClave) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("nombre", "Nombre " + seed);
         payload.put("direccion", "Direccion " + seed);
         payload.put("telefono", "Telefono " + seed);
         payload.put("email", email);
         payload.put("password", password);
+        payload.put("departamentoClave", departamentoClave);
         return payload;
     }
 
@@ -29,6 +30,12 @@ public final class EmpleadoTestDataFactory {
         payload.put("nombre", "Actualizado " + seed);
         payload.put("direccion", "Nueva direccion " + seed);
         payload.put("telefono", "Nuevo telefono " + seed);
+        return payload;
+    }
+
+    public static Map<String, Object> updateRequest(String seed, String departamentoClave) {
+        Map<String, Object> payload = updateRequest(seed);
+        payload.put("departamentoClave", departamentoClave);
         return payload;
     }
 

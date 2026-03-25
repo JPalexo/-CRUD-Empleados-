@@ -61,4 +61,32 @@ class EmpleadoMaintenanceApiTest extends AbstractApiIntegrationTest {
             .andExpect(jsonPath("$.message", containsString("nombre")))
             .andExpect(jsonPath("$.message", containsString("100")));
     }
+
+    @Test
+    void shouldUpdateDepartamentoAssignmentWhenDepartamentoClaveIsProvided() throws Exception {
+        Empleado empleado = seedEmpleado("Nombre M3", "Direccion M3", "Telefono M3");
+        String clave = "EMP-" + empleado.getClaveNumero();
+        String departamentoClave = seedDepartamentoClave("Dept Maintenance Reassign");
+
+        mockMvc.perform(put("/api/v1/empleados/{clave}", clave)
+                .header("Authorization", basicAuthHeaderValue())
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(EmpleadoTestDataFactory.updateRequest("M3", departamentoClave))))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departamentoClave").value(departamentoClave));
+    }
+
+    @Test
+    void shouldReturn404WhenUpdateUsesUnknownDepartamentoClave() throws Exception {
+        Empleado empleado = seedEmpleado("Nombre M4", "Direccion M4", "Telefono M4");
+        String clave = "EMP-" + empleado.getClaveNumero();
+        Map<String, Object> payload = EmpleadoTestDataFactory.updateRequest("M4", "DEP-99999");
+
+        mockMvc.perform(put("/api/v1/empleados/{clave}", clave)
+                .header("Authorization", basicAuthHeaderValue())
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message", containsString("Departamento not found")));
+    }
 }

@@ -22,11 +22,12 @@ class EmpleadoCrudWorkflowTimedIT extends AbstractApiIntegrationTest {
     @Test
     void shouldCompleteCrudWorkflowInUnderThreeMinutes() throws Exception {
         Instant start = Instant.now();
+        String departamentoClave = seedDepartamentoClave("Dept WF");
 
         MvcResult createResult = mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(EmpleadoTestDataFactory.createRequest("WF"))))
+            .content(objectMapper.writeValueAsString(EmpleadoTestDataFactory.createRequest("WF", departamentoClave))))
             .andExpect(status().isCreated())
             .andReturn();
 

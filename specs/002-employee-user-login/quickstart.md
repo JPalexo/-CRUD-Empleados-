@@ -41,9 +41,17 @@ $body = @{
   telefono = "555-0101"
   email = "  EMPLEADO.LOGIN@EMPRESA.COM  "
   password = "abc12345"
+  departamentoClave = "DEP-1"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Method Post -Uri "http://localhost:8080/api/v1/empleados" -Headers $headers -Body $body
+Invoke-RestMethod -Method Post -Uri "http://localhost:8081/api/v1/empleados" -Headers $headers -Body $body
+```
+
+Prerequisito: crear primero un departamento y usar su clave (ejemplo `DEP-1`) en `departamentoClave`.
+
+```powershell
+$deptBody = @{ nombre = "Departamento Login" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "http://localhost:8081/api/v1/departamentos" -Headers $headers -Body $deptBody
 ```
 
 Resultado esperado:
@@ -62,7 +70,7 @@ $loginBody = @{
   password = "abc12345"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Method Post -Uri "http://localhost:8080/api/v1/empleados/login" -ContentType "application/json" -Body $loginBody
+Invoke-RestMethod -Method Post -Uri "http://localhost:8081/api/v1/empleados/login" -ContentType "application/json" -Body $loginBody
 ```
 
 Resultado esperado:
@@ -77,7 +85,7 @@ Sin Basic Auth, los endpoints administrativos deben seguir protegidos.
 
 ```powershell
 try {
-  Invoke-WebRequest -Method Get -Uri "http://localhost:8080/api/v1/empleados" -TimeoutSec 10
+  Invoke-WebRequest -Method Get -Uri "http://localhost:8081/api/v1/empleados" -TimeoutSec 10
 } catch {
   $_.Exception.Response.StatusCode.Value__
 }
@@ -90,7 +98,7 @@ Resultado esperado: `401`.
 ```powershell
 $invalidBody = @{ email = "empleado.login@empresa.com"; password = "wrong123" } | ConvertTo-Json
 try {
-  Invoke-WebRequest -Method Post -Uri "http://localhost:8080/api/v1/empleados/login" -ContentType "application/json" -Body $invalidBody -TimeoutSec 10
+  Invoke-WebRequest -Method Post -Uri "http://localhost:8081/api/v1/empleados/login" -ContentType "application/json" -Body $invalidBody -TimeoutSec 10
 } catch {
   $_.Exception.Response.StatusCode.Value__
 }

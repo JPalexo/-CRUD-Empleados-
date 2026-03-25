@@ -16,9 +16,9 @@ public class OpenApiConfig {
         String schemeName = "basicAuth";
         return new OpenAPI()
             .info(new Info()
-                .title("Empleados API")
-                .version("1.2.0")
-                .description("CRUD administrativo de empleados y login simbolico publico de empleados."))
+                .title("Empleados y Departamentos API")
+                .version("1.3.0")
+                .description("CRUD administrativo de empleados/departamentos y login simbolico publico de empleados."))
             .addSecurityItem(new SecurityRequirement().addList(schemeName))
             .components(new Components().addSecuritySchemes(schemeName,
                 new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")));

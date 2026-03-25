@@ -24,8 +24,9 @@ class LoginLatencyIT extends AbstractApiIntegrationTest {
 
     @Test
     void shouldKeepLoginP95BelowTwoSecondsUnderNormalLoadSample() throws Exception {
+        String departamentoClave = seedDepartamentoClave("Dept PERF1");
         Map<String, Object> createPayload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "PERF1", "empleado.perf1@empresa.com", "abc12345");
+            "PERF1", "empleado.perf1@empresa.com", "abc12345", departamentoClave);
 
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())

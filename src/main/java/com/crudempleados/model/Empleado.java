@@ -30,6 +30,12 @@ public class Empleado {
     @Column(name = "telefono", nullable = false, length = 100)
     private String telefono;
 
+    @Column(name = "departamento_clave_prefijo", length = 4)
+    private String departamentoClavePrefijo;
+
+    @Column(name = "departamento_clave_numero")
+    private Long departamentoClaveNumero;
+
     @PrePersist
     void assignPrefix() {
         if (clavePrefijo == null || clavePrefijo.isBlank()) {
@@ -75,5 +81,21 @@ public class Empleado {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getDepartamentoClavePrefijo() {
+        return departamentoClavePrefijo;
+    }
+
+    public void setDepartamentoClavePrefijo(String departamentoClavePrefijo) {
+        this.departamentoClavePrefijo = departamentoClavePrefijo;
+    }
+
+    public Long getDepartamentoClaveNumero() {
+        return departamentoClaveNumero;
+    }
+
+    public void setDepartamentoClaveNumero(Long departamentoClaveNumero) {
+        this.departamentoClaveNumero = departamentoClaveNumero;
     }
 }

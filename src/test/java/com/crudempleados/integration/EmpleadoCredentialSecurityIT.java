@@ -17,7 +17,8 @@ class EmpleadoCredentialSecurityIT extends AbstractApiIntegrationTest {
     void shouldPersistOnlyHashAndNeverPlaintextPassword() throws Exception {
         String rawPassword = "abc12345";
         String email = "empleado.security@empresa.com";
-        Map<String, Object> payload = EmpleadoTestDataFactory.createRequestWithCredentials("SEC1", email, rawPassword);
+        String departamentoClave = seedDepartamentoClave("Dept SEC1");
+        Map<String, Object> payload = EmpleadoTestDataFactory.createRequestWithCredentials("SEC1", email, rawPassword, departamentoClave);
 
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())

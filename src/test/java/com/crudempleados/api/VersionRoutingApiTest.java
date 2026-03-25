@@ -57,4 +57,19 @@ class VersionRoutingApiTest extends AbstractApiIntegrationTest {
                 .content("{}"))
             .andExpect(status().isNotFound());
     }
+
+    @Test
+    void shouldExposeOnlyVersionedDepartamentoRoutes() throws Exception {
+        mockMvc.perform(get("/api/v1/departamentos")
+                .header("Authorization", basicAuthHeaderValue()))
+            .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/departamentos")
+                .header("Authorization", basicAuthHeaderValue()))
+            .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/v2/departamentos")
+                .header("Authorization", basicAuthHeaderValue()))
+            .andExpect(status().isNotFound());
+    }
 }
