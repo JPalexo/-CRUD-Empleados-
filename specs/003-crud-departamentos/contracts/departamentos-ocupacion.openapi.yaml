@@ -1,0 +1,201 @@
+openapi: 3.0.3
+info:
+  title: CRUD Departamentos y Ocupacion API
+  version: 1.0.0
+paths:
+  /api/v1/departamentos:
+    get:
+      summary: Listar departamentos con metrica de ocupacion
+      security:
+        - basicAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Listado paginado con metricas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartamentoPageResponse'
+        '400':
+          description: Parametros de paginacion invalidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Conflicto de dominio por inconsistencia de ocupacion
+        '401':
+          description: No autenticado
+    post:
+      summary: Crear departamento
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartamentoCreateRequest'
+      responses:
+        '201':
+          description: Departamento creado
+        '400':
+          description: Error de validacion
+        '401':
+          description: No autenticado
+        '409':
+          description: Nombre duplicado
+  /api/v1/departamentos/{clave}:
+    get:
+      summary: Obtener detalle de departamento con metrica de ocupacion
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: clave
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Departamento encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartamentoResponse'
+        '401':
+          description: No autenticado
+        '409':
+          description: Conflicto de dominio por inconsistencia de ocupacion
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar departamento
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: clave
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartamentoUpdateRequest'
+      responses:
+        '200':
+          description: Actualizado
+        '400':
+          description: Error de validacion
+        '401':
+          description: No autenticado
+        '404':
+          description: No encontrado
+        '409':
+          description: Conflicto de dominio
+    delete:
+      summary: Eliminar departamento
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: clave
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Eliminado
+        '401':
+          description: No autenticado
+        '404':
+          description: No encontrado
+        '409':
+          description: Departamento en uso
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    DepartamentoCreateRequest:
+      type: object
+      required: [nombre]
+      properties:
+        nombre:
+          type: string
+    DepartamentoUpdateRequest:
+      type: object
+      required: [nombre]
+      properties:
+        nombre:
+          type: string
+    DepartamentoResponse:
+      type: object
+      properties:
+        clave:
+          type: string
+        nombre:
+          type: string
+        ocupacionActual:
+          type: integer
+        capacidadMaxima:
+          type: integer
+        porcentajeOcupacion:
+          type: number
+          format: double
+        estaLleno:
+          type: boolean
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+    DepartamentoPageResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepartamentoResponse'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    ApiError:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        timestamp:
+          type: string
+          format: date-time

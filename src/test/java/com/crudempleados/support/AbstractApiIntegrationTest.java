@@ -1,7 +1,9 @@
 package com.crudempleados.support;
 
 import com.crudempleados.domain.ClaveEmpleadoCodec;
+import com.crudempleados.model.Departamento;
 import com.crudempleados.model.Empleado;
+import com.crudempleados.repository.DepartamentoRepository;
 import com.crudempleados.repository.EmpleadoCredencialRepository;
 import com.crudempleados.repository.EmpleadoLoginEventoRepository;
 import com.crudempleados.repository.EmpleadoRepository;
@@ -55,6 +57,9 @@ public abstract class AbstractApiIntegrationTest {
     protected EmpleadoRepository empleadoRepository;
 
     @Autowired
+    protected DepartamentoRepository departamentoRepository;
+
+    @Autowired
     protected EmpleadoCredencialRepository empleadoCredencialRepository;
 
     @Autowired
@@ -65,6 +70,7 @@ public abstract class AbstractApiIntegrationTest {
         empleadoLoginEventoRepository.deleteAll();
         empleadoCredencialRepository.deleteAll();
         empleadoRepository.deleteAll();
+        departamentoRepository.deleteAll();
     }
 
     protected String basicAuthHeaderValue() {
@@ -84,6 +90,24 @@ public abstract class AbstractApiIntegrationTest {
         empleado.setDireccion(direccion);
         empleado.setTelefono(telefono);
         return empleadoRepository.save(empleado);
+    }
+
+    protected Departamento seedDepartamento(String nombre) {
+        Departamento departamento = new Departamento();
+        departamento.setNombre(nombre.trim());
+        departamento.setNombreNormalizado(nombre.trim().toLowerCase());
+        return departamentoRepository.save(departamento);
+    }
+
+    protected String seedDepartamentoClave(String nombre) {
+        Departamento departamento = seedDepartamento(nombre);
+        return "DEP-" + departamento.getClaveNumero();
+    }
+
+    protected void assignEmpleadoToDepartamento(Empleado empleado, Departamento departamento) {
+        empleado.setDepartamentoClavePrefijo(departamento.getClavePrefijo());
+        empleado.setDepartamentoClaveNumero(departamento.getClaveNumero());
+        empleadoRepository.save(empleado);
     }
 
     protected long parseNumeroFromClave(String clave) {

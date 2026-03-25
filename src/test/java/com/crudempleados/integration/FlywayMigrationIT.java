@@ -31,12 +31,28 @@ class FlywayMigrationIT {
             .load();
 
         MigrateResult result = flyway.migrate();
-        assertThat(result.migrationsExecuted).isGreaterThanOrEqualTo(1);
+        assertThat(result.migrationsExecuted).isEqualTo(3);
 
         try (Connection connection = DriverManager.getConnection(
             POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
              Statement statement = connection.createStatement();
              ResultSet rs = statement.executeQuery("SELECT count(*) FROM information_schema.tables WHERE table_name = 'empleados'")) {
+            rs.next();
+            assertThat(rs.getInt(1)).isEqualTo(1);
+        }
+
+        try (Connection connection = DriverManager.getConnection(
+            POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery("SELECT count(*) FROM information_schema.tables WHERE table_name = 'departamentos'")) {
+            rs.next();
+            assertThat(rs.getInt(1)).isEqualTo(1);
+        }
+
+        try (Connection connection = DriverManager.getConnection(
+            POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery("SELECT count(*) FROM information_schema.columns WHERE table_name='empleados' AND column_name='departamento_clave_numero'")) {
             rs.next();
             assertThat(rs.getInt(1)).isEqualTo(1);
         }

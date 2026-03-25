@@ -1,7 +1,9 @@
+name: crud-empleados-003-departamentos
+
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: crud-empleados-postgres
+    container_name: crud-empleados-003-postgres
     environment:
       POSTGRES_DB: ${CRUD_DB_NAME:-empleados}
       POSTGRES_USER: ${CRUD_DB_USER:-empleados_app}
@@ -12,13 +14,14 @@ services:
       timeout: 3s
       retries: 10
     ports:
-      - "5432:5432"
+      - "${CRUD_DB_HOST_PORT:-5433}:5432"
 
   backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: crud-empleados-backend
+    image: crud-empleados-003-backend:latest
+    container_name: crud-empleados-003-backend
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,4 +35,4 @@ services:
       CRUD_BASIC_USER: ${CRUD_BASIC_USER}
       CRUD_BASIC_PASSWORD: ${CRUD_BASIC_PASSWORD}
     ports:
-      - "8080:8080"
+      - "${CRUD_APP_PORT:-8081}:8080"

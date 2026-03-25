@@ -1,6 +1,7 @@
 package com.crudempleados.api.error;
 
 import com.crudempleados.domain.exception.DuplicateEmployeeEmailException;
+import com.crudempleados.domain.exception.DepartamentoDomainConflictException;
 import com.crudempleados.domain.exception.InvalidClaveFormatException;
 import com.crudempleados.domain.exception.InvalidEmployeeCredentialsException;
 import com.crudempleados.domain.exception.ResourceNotFoundException;
@@ -53,6 +54,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEmployeeEmailException.class)
     public ResponseEntity<ApiError> handleDuplicateEmail(DuplicateEmployeeEmailException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(DepartamentoDomainConflictException.class)
+    public ResponseEntity<ApiError> handleDepartamentoConflict(DepartamentoDomainConflictException ex, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
     }
 

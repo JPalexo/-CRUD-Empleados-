@@ -17,8 +17,9 @@ class EmpleadoLoginIT extends AbstractApiIntegrationTest {
 
     @Test
     void shouldAuthenticateUsingTrimAndLowercaseEmailNormalization() throws Exception {
+        String departamentoClave = seedDepartamentoClave("Dept NORM1");
         Map<String, Object> createPayload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "NORM1", "  EMPLEADO.NORM1@EMPRESA.COM  ", "abc12345");
+            "NORM1", "  EMPLEADO.NORM1@EMPRESA.COM  ", "abc12345", departamentoClave);
 
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
@@ -39,8 +40,9 @@ class EmpleadoLoginIT extends AbstractApiIntegrationTest {
 
     @Test
     void shouldRejectLoginForDeletedEmployeeAndNonEnabledCredential() throws Exception {
+        String departamentoClave1 = seedDepartamentoClave("Dept DEL1");
         Map<String, Object> createDeletedPayload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "DEL1", "empleado.del1@empresa.com", "abc12345");
+            "DEL1", "empleado.del1@empresa.com", "abc12345", departamentoClave1);
         String deletedClave = objectMapper.readTree(mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
                 .contentType(APPLICATION_JSON)
@@ -59,8 +61,9 @@ class EmpleadoLoginIT extends AbstractApiIntegrationTest {
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", containsString("Employee authentication failed")));
 
+        String departamentoClave2 = seedDepartamentoClave("Dept DIS1");
         Map<String, Object> createDisabledPayload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "DIS1", "empleado.dis1@empresa.com", "abc12345");
+            "DIS1", "empleado.dis1@empresa.com", "abc12345", departamentoClave2);
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
                 .contentType(APPLICATION_JSON)

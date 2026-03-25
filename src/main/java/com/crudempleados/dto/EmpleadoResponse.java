@@ -6,15 +6,17 @@ public class EmpleadoResponse {
     private String nombre;
     private String direccion;
     private String telefono;
+    private String departamentoClave;
 
     public EmpleadoResponse() {
     }
 
-    public EmpleadoResponse(String clave, String nombre, String direccion, String telefono) {
+    public EmpleadoResponse(String clave, String nombre, String direccion, String telefono, String departamentoClave) {
         this.clave = clave;
         this.nombre = nombre;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.departamentoClave = departamentoClave;
     }
 
     public String getClave() {
@@ -47,5 +49,13 @@ public class EmpleadoResponse {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getDepartamentoClave() {
+        return departamentoClave;
+    }
+
+    public void setDepartamentoClave(String departamentoClave) {
+        this.departamentoClave = departamentoClave;
     }
 }

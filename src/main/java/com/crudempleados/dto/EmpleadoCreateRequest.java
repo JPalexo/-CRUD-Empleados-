@@ -31,6 +31,10 @@ public class EmpleadoCreateRequest {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "must include at least one letter and one number")
     private String password;
 
+    @NotBlank(message = "must not be blank")
+    @Pattern(regexp = "^DEP-[1-9][0-9]*$", message = "must match DEP-{numero} without leading zeros")
+    private String departamentoClave;
+
     public String getNombre() {
         return nombre;
     }
@@ -69,5 +73,13 @@ public class EmpleadoCreateRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDepartamentoClave() {
+        return departamentoClave;
+    }
+
+    public void setDepartamentoClave(String departamentoClave) {
+        this.departamentoClave = departamentoClave;
     }
 }

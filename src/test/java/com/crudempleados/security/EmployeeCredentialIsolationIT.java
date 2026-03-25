@@ -16,8 +16,9 @@ class EmployeeCredentialIsolationIT extends AbstractApiIntegrationTest {
     void shouldRejectAdminCrudAccessWithEmployeeCredentials() throws Exception {
         String employeeEmail = "empleado.isolation@empresa.com";
         String employeePassword = "abc12345";
+        String departamentoClave = seedDepartamentoClave("Dept ISO1");
         Map<String, Object> createPayload = EmpleadoTestDataFactory.createRequestWithCredentials(
-            "ISO1", employeeEmail, employeePassword);
+            "ISO1", employeeEmail, employeePassword, departamentoClave);
 
         mockMvc.perform(post("/api/v1/empleados")
                 .header("Authorization", basicAuthHeaderValue())
