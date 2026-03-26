@@ -1,0 +1,62 @@
+<section class="card">
+  <h1>Empleados</h1>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <div class="actions" style="margin-bottom: 1rem;">
+    <button class="primary" type="button" (click)="clearSelection()">Nuevo empleado</button>
+    <button type="button" (click)="load()" [disabled]="loading()">Recargar</button>
+  </div>
+
+  @if (loading()) {
+    <p>Cargando empleados...</p>
+  } @else {
+    <table width="100%" cellspacing="0" cellpadding="8">
+      <thead>
+        <tr>
+          <th align="left">Clave</th>
+          <th align="left">Nombre</th>
+          <th align="left">Direccion</th>
+          <th align="left">Telefono</th>
+          <th align="left">Departamento</th>
+          <th align="left">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (empleado of empleados(); track empleado.clave) {
+          <tr>
+            <td>{{ empleado.clave }}</td>
+            <td>{{ empleado.nombre }}</td>
+            <td>{{ empleado.direccion }}</td>
+            <td>{{ empleado.telefono }}</td>
+            <td>{{ empleado.departamentoClave }}</td>
+            <td>
+              <div class="actions">
+                <button type="button" (click)="selectForEdit(empleado)">Editar</button>
+                <button type="button" (click)="delete(empleado)">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6">No hay empleados para mostrar.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="actions" style="margin-top: 1rem;">
+      <button type="button" (click)="prevPage()" [disabled]="page() === 0">Anterior</button>
+      <span>Pagina {{ page() + 1 }} de {{ totalPages() || 1 }}</span>
+      <button type="button" (click)="nextPage()" [disabled]="page() + 1 >= totalPages()">Siguiente</button>
+    </div>
+  }
+</section>
+
+<app-empleado-form
+  [empleado]="selected()"
+  (submitted)="onFormSubmit($event)"
+  (cancelled)="clearSelection()"
+></app-empleado-form>

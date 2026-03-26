@@ -1,9 +1,10 @@
 package com.crudempleados.service;
 
+import org.springframework.stereotype.Service;
+
 import com.crudempleados.model.EmpleadoId;
 import com.crudempleados.model.EmpleadoLoginEvento;
 import com.crudempleados.repository.EmpleadoLoginEventoRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 public class EmpleadoLoginEventService {

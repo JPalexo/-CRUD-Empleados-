@@ -35,7 +35,6 @@ Java 17: Follow standard conventions
 ## Recent Changes
 - 004-frontend-crud-ui: Added Java 17 (backend), TypeScript strict mode (frontend Angular 22 LTS) + Spring Boot 3.x, Spring Security Basic Auth, Spring Data JPA, Flyway, springdoc-openapi, PostgreSQL driver, Angular 22, RxJS
 - 003-crud-departamentos: Added Java 17 + Spring Boot 3.x, Spring Web, Spring Security, Spring Data JPA, Flyway, springdoc-openapi
-- 003-crud-departamentos: Added Java 17 + Spring Boot 3.x, Spring Web, Spring Security, Spring Data JPA, Flyway, springdoc-openapi
 
 
 <!-- MANUAL ADDITIONS START -->

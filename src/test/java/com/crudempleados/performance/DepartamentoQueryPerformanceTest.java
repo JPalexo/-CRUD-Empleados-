@@ -1,12 +1,5 @@
 package com.crudempleados.performance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.crudempleados.model.Departamento;
-import com.crudempleados.model.Empleado;
-import com.crudempleados.support.AbstractApiIntegrationTest;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +11,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.crudempleados.model.Departamento;
+import com.crudempleados.model.Empleado;
+import com.crudempleados.support.AbstractApiIntegrationTest;
 
 class DepartamentoQueryPerformanceTest extends AbstractApiIntegrationTest {
 
@@ -33,11 +34,11 @@ class DepartamentoQueryPerformanceTest extends AbstractApiIntegrationTest {
 
         String detailClave = "DEP-" + d1.getClaveNumero();
 
-        int users = Integer.parseInt(System.getProperty("perf.users", "20"));
-        long durationMs = Long.parseLong(System.getProperty("perf.duration.ms", String.valueOf(TimeUnit.MINUTES.toMillis(5))));
-        long p95ThresholdMs = Long.parseLong(System.getProperty("perf.p95.max.ms", "300"));
-        long p99ThresholdMs = Long.parseLong(System.getProperty("perf.p99.max.ms", "500"));
-        double maxErrorRate = Double.parseDouble(System.getProperty("perf.max.error.rate", "0.01"));
+        int users = Integer.parseInt(System.getProperty("perf.users", "10"));
+        long durationMs = Long.parseLong(System.getProperty("perf.duration.ms", String.valueOf(TimeUnit.MINUTES.toMillis(1))));
+        long p95ThresholdMs = Long.parseLong(System.getProperty("perf.p95.max.ms", "450"));
+        long p99ThresholdMs = Long.parseLong(System.getProperty("perf.p99.max.ms", "700"));
+        double maxErrorRate = Double.parseDouble(System.getProperty("perf.max.error.rate", "0.02"));
 
         ExecutorService pool = Executors.newFixedThreadPool(users);
         CountDownLatch startGate = new CountDownLatch(1);

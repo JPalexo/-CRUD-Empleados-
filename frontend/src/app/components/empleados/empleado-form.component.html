@@ -1,0 +1,75 @@
+<section class="card">
+  <h2>{{ empleado ? 'Editar empleado' : 'Nuevo empleado' }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div>
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" formControlName="nombre" />
+      @if (form.controls.nombre.touched && form.controls.nombre.hasError('required')) {
+        <p class="error">Nombre obligatorio.</p>
+      }
+      @if (form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')) {
+        <p class="error">Maximo 100 caracteres.</p>
+      }
+    </div>
+
+    <div>
+      <label for="direccion">Direccion</label>
+      <input id="direccion" type="text" formControlName="direccion" />
+      @if (form.controls.direccion.touched && form.controls.direccion.hasError('required')) {
+        <p class="error">Direccion obligatoria.</p>
+      }
+    </div>
+
+    <div>
+      <label for="telefono">Telefono</label>
+      <input id="telefono" type="text" formControlName="telefono" />
+      @if (form.controls.telefono.touched && form.controls.telefono.hasError('required')) {
+        <p class="error">Telefono obligatorio.</p>
+      }
+    </div>
+
+    @if (!empleado) {
+      <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" />
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <p class="error">Email obligatorio.</p>
+        }
+        @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+          <p class="error">Formato de email invalido.</p>
+        }
+      </div>
+
+      <div>
+        <label for="password">Contrasena</label>
+        <input id="password" type="password" formControlName="password" />
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <p class="error">Contrasena obligatoria.</p>
+        }
+        @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+          <p class="error">Debe tener al menos 8 caracteres.</p>
+        }
+        @if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
+          <p class="error">Debe incluir al menos una letra y un numero.</p>
+        }
+      </div>
+    }
+
+    <div>
+      <label for="departamentoClave">Departamento clave</label>
+      <input id="departamentoClave" type="text" formControlName="departamentoClave" placeholder="DEP-1" />
+      @if (form.controls.departamentoClave.touched && form.controls.departamentoClave.hasError('required')) {
+        <p class="error">Departamento obligatorio.</p>
+      }
+      @if (form.controls.departamentoClave.touched && form.controls.departamentoClave.hasError('pattern')) {
+        <p class="error">Formato requerido DEP-n sin ceros a la izquierda.</p>
+      }
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="primary">{{ empleado ? 'Guardar cambios' : 'Crear empleado' }}</button>
+      <button type="button" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
+</section>

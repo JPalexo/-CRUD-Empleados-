@@ -17,31 +17,21 @@
   the iteration process.
 -->
 
-**Language/Version**: [Java 17 (backend mandatory), TypeScript strict mode (frontend mandatory)]  
-**Primary Dependencies**: [Spring Boot 3.x, Spring Security, Spring Data JPA,
-Flyway, springdoc-openapi, PostgreSQL driver, Angular 22 LTS, RxJS]  
-**Storage**: [PostgreSQL (mandatory)]  
-**Testing**: [JUnit 5, Spring Boot Test, MockMvc, frontend unit/integration tests, Testcontainers or Docker Compose-backed integration tests]  
-**Target Platform**: [Linux container runtime / JVM server + browser frontend]
-**Project Type**: [Full-stack: Spring Boot backend + Angular frontend]  
-**Performance Goals**: [e.g., API latency and throughput targets per feature]  
-**Constraints**: [Must keep Basic Auth, Flyway migrations, Dockerized local Postgres,
-Angular 22 LTS baseline, and Swagger/OpenAPI in sync with code]  
-**Scale/Scope**: [e.g., number of endpoints, entities, expected concurrent users]
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- [ ] Stack gate: proposal remains on Spring Boot 3.x + Java 17.
-- [ ] Frontend gate: proposal uses Angular 22 LTS with strict TypeScript.
-- [ ] Security gate: all non-public endpoints enforce Basic Authentication.
-- [ ] Data gate: schema changes are defined as Flyway migrations for PostgreSQL.
-- [ ] Runtime gate: local integration path includes Dockerized PostgreSQL.
-- [ ] Integration gate: frontend-backend verification is planned in local Docker workflow.
-- [ ] Contract gate: OpenAPI/Swagger updates are planned for every API change.
-- [ ] API consumption gate: frontend service layer consumes versioned /api/v1 endpoints.
-- [ ] Verification gate: tests cover auth behavior, data migration path, and key API flows.
+[Gates determined based on constitution file]
 
 ## Project Structure
 
@@ -66,41 +56,43 @@ specs/[###-feature]/
 -->
 
 ```text
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
 src/
-├── main/
-│   ├── java/.../
-│   │   ├── config/
-│   │   ├── controller/
-│   │   ├── service/
-│   │   ├── repository/
-│   │   └── model/
-│   └── resources/
-│       ├── application.yml
-│       └── db/migration/
-└── test/
-  ├── java/.../
-  │   ├── unit/
-  │   └── integration/
-  └── resources/
+├── models/
+├── services/
+├── cli/
+└── lib/
+
+tests/
+├── contract/
+├── integration/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
 
 frontend/
-├── src/app/
-│   ├── pages/
+├── src/
 │   ├── components/
-│   ├── services/
-│   ├── models/
-│   └── core/
-│       ├── guards/
-│       └── interceptors/
-└── src/environments/
+│   ├── pages/
+│   └── services/
+└── tests/
 
-docker/
-└── compose/
-  └── docker-compose.yml
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: [Document the selected package structure, migration location,
-and Docker assets for local PostgreSQL execution]
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 

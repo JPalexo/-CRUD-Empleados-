@@ -1,6 +1,10 @@
 package com.crudempleados.service;
 
 import java.util.Optional;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.crudempleados.domain.ClaveEmpleadoCodec;
 import com.crudempleados.domain.EmailNormalizer;
 import com.crudempleados.domain.exception.InvalidEmployeeCredentialsException;
@@ -11,9 +15,6 @@ import com.crudempleados.model.EmpleadoCredencial;
 import com.crudempleados.model.EmpleadoId;
 import com.crudempleados.repository.EmpleadoCredencialRepository;
 import com.crudempleados.repository.EmpleadoRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmpleadoLoginService {
@@ -41,7 +42,6 @@ public class EmpleadoLoginService {
         this.claveEmpleadoCodec = claveEmpleadoCodec;
     }
 
-    @Transactional
     public EmpleadoLoginResponse login(EmpleadoLoginRequest request) {
         String emailNormalizado = emailNormalizer.normalize(request.getEmail());
         Optional<EmpleadoCredencial> credencialOpt = empleadoCredencialRepository.findByEmailNormalizado(emailNormalizado);

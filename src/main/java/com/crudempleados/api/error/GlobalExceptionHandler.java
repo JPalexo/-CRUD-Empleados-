@@ -1,15 +1,10 @@
 package com.crudempleados.api.error;
 
-import com.crudempleados.domain.exception.DuplicateEmployeeEmailException;
-import com.crudempleados.domain.exception.DepartamentoDomainConflictException;
-import com.crudempleados.domain.exception.InvalidClaveFormatException;
-import com.crudempleados.domain.exception.InvalidEmployeeCredentialsException;
-import com.crudempleados.domain.exception.ResourceNotFoundException;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +13,22 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import com.crudempleados.domain.exception.DepartamentoDomainConflictException;
+import com.crudempleados.domain.exception.DuplicateEmployeeEmailException;
+import com.crudempleados.domain.exception.InvalidClaveFormatException;
+import com.crudempleados.domain.exception.InvalidEmployeeCredentialsException;
+import com.crudempleados.domain.exception.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -87,8 +95,14 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "Resource not found", request.getRequestURI());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest request) {
+        LOG.error("Unhandled exception at path {}", request.getRequestURI(), ex);
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request.getRequestURI());
     }
 

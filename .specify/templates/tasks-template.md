@@ -8,8 +8,7 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests for authentication behavior,
-Flyway migrations, frontend lint/build, and critical endpoint flows are REQUIRED by constitution.
+**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -21,11 +20,10 @@ Flyway migrations, frontend lint/build, and critical endpoint flows are REQUIRED
 
 ## Path Conventions
 
-- **Spring Boot app**: `src/main/java/`, `src/main/resources/`, `src/test/java/`
-- **Angular app**: `frontend/src/app/`, `frontend/src/environments/`
-- **Migrations**: `src/main/resources/db/migration/`
-- **Docker assets**: `docker/compose/` or repository-root `docker-compose.yml`
-- Paths shown below assume a backend + Angular frontend structure - adjust if modules are used
+- **Single project**: `src/`, `tests/` at repository root
+- **Web app**: `backend/src/`, `frontend/src/`
+- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
+- Paths shown below assume single project - adjust based on plan.md structure
 
 <!-- 
   ============================================================================
@@ -50,10 +48,9 @@ Flyway migrations, frontend lint/build, and critical endpoint flows are REQUIRED
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create/verify Spring Boot 3 + Java 17 project structure per implementation plan
-- [ ] T002 Initialize core dependencies (web, security, data-jpa, flyway, postgresql, springdoc-openapi, Angular 22)
-- [ ] T003 [P] Configure build and quality tooling (backend checks, frontend lint/build)
-- [ ] T004 [P] Create local container runtime files for PostgreSQL (Docker Compose)
+- [ ] T001 Create project structure per implementation plan
+- [ ] T002 Initialize [language] project with [framework] dependencies
+- [ ] T003 [P] Configure linting and formatting tools
 
 ---
 
@@ -65,15 +62,12 @@ Flyway migrations, frontend lint/build, and critical endpoint flows are REQUIRED
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T005 Configure Spring profiles and environment-based datasource properties
-- [ ] T006 Setup Flyway baseline and first migration files in src/main/resources/db/migration/
-- [ ] T007 [P] Configure Spring Security Basic Authentication with explicit public endpoint policy
-- [ ] T008 [P] Setup global error handling and validation response model
-- [ ] T009 Create shared base entities/repositories used across stories
-- [ ] T010 [P] Enable Swagger/OpenAPI generation and Swagger UI endpoint
-- [ ] T011 [P] Setup Angular feature modular skeleton (pages, components, services, models, guards/interceptors)
-- [ ] T012 [P] Setup frontend environment profiles and centralized HTTP error/loading handling
-- [ ] T013 Validate Dockerized local integration (frontend + backend + PostgreSQL) and API connectivity
+- [ ] T004 Setup database schema and migrations framework
+- [ ] T005 [P] Implement authentication/authorization framework
+- [ ] T006 [P] Setup API routing and middleware structure
+- [ ] T007 Create base models/entities that all stories depend on
+- [ ] T008 Configure error handling and logging infrastructure
+- [ ] T009 Setup environment configuration management
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -85,24 +79,21 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 ⚠️
+### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T014 [P] [US1] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
-- [ ] T015 [P] [US1] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
-- [ ] T016 [P] [US1] Frontend lint/build validation for story scope in frontend/
+- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 1
 
-- [ ] T017 [P] [US1] Create [Entity1] in src/main/java/.../model/[Entity1].java
-- [ ] T018 [P] [US1] Create [Entity2] in src/main/java/.../model/[Entity2].java
-- [ ] T019 [US1] Implement [Service] in src/main/java/.../service/[Service].java (depends on T017, T018)
-- [ ] T020 [US1] Implement [endpoint/feature] in src/main/java/.../controller/[Controller].java
-- [ ] T021 [US1] Add request/response validation and exception mapping
-- [ ] T022 [US1] Implement typed frontend service + page/component flow in frontend/src/app/
-- [ ] T023 [US1] Align frontend form validation and accessibility baseline for story flows
-- [ ] T024 [US1] Update OpenAPI annotations/spec for user story 1 endpoints
+- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
+- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
+- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
+- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T016 [US1] Add validation and error handling
+- [ ] T017 [US1] Add logging for user story 1 operations
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -114,20 +105,17 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 ⚠️
+### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T025 [P] [US2] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
-- [ ] T026 [P] [US2] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
-- [ ] T027 [P] [US2] Frontend lint/build validation for story scope in frontend/
+- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 2
 
-- [ ] T028 [P] [US2] Create/update entity in src/main/java/.../model/[Entity].java
-- [ ] T029 [US2] Implement service logic in src/main/java/.../service/[Service].java
-- [ ] T030 [US2] Implement endpoint in src/main/java/.../controller/[Controller].java
-- [ ] T031 [US2] Add or update Flyway migration if schema changes
-- [ ] T032 [US2] Implement typed frontend integrations and responsive UI updates
-- [ ] T033 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
+- [ ] T021 [US2] Implement [Service] in src/services/[service].py
+- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -139,19 +127,16 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 ⚠️
+### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T034 [P] [US3] API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java
-- [ ] T035 [P] [US3] Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java
-- [ ] T036 [P] [US3] Frontend lint/build validation for story scope in frontend/
+- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 3
 
-- [ ] T037 [P] [US3] Create/update entity in src/main/java/.../model/[Entity].java
-- [ ] T038 [US3] Implement service in src/main/java/.../service/[Service].java
-- [ ] T039 [US3] Implement endpoint in src/main/java/.../controller/[Controller].java
-- [ ] T040 [US3] Implement frontend models/pages/components with typed API services
-- [ ] T041 [US3] Update Swagger/OpenAPI and migration artifacts as applicable
+- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
+- [ ] T027 [US3] Implement [Service] in src/services/[service].py
+- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -168,11 +153,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit/integration tests in src/test/java/
-- [ ] TXXX [P] Frontend accessibility and responsive validation in frontend/
-- [ ] TXXX Security hardening and auth rule review
-- [ ] TXXX Validate Flyway history and rollback/readiness notes
-- [ ] TXXX Verify Swagger/OpenAPI publication and endpoint accuracy
+- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
+- [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
 
 ---
@@ -196,10 +178,9 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Security and integration tests MUST be written and FAIL before implementation
+- Tests (if included) MUST be written and FAIL before implementation
 - Models before services
 - Services before endpoints
-- Migrations before code that depends on new schema
 - Core implementation before integration
 - Story complete before moving to next priority
 
@@ -218,12 +199,12 @@ Examples of foundational tasks (adjust based on your project):
 
 ```bash
 # Launch all tests for User Story 1 together (if tests requested):
-Task: "API/security test for [endpoint] in src/test/java/.../[Name]SecurityTest.java"
-Task: "Integration test for [user journey] in src/test/java/.../[Name]IntegrationTest.java"
+Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
+Task: "Integration test for [user journey] in tests/integration/test_[name].py"
 
 # Launch all models for User Story 1 together:
-Task: "Create [Entity1] in src/main/java/.../model/[Entity1].java"
-Task: "Create [Entity2] in src/main/java/.../model/[Entity2].java"
+Task: "Create [Entity1] model in src/models/[entity1].py"
+Task: "Create [Entity2] model in src/models/[entity2].py"
 ```
 
 ---

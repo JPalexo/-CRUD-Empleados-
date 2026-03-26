@@ -1,0 +1,35 @@
+<section class="card">
+  <h1>Acceso administrador</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div>
+      <label for="email">Correo</label>
+      <input id="email" type="email" formControlName="email" />
+      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+        <p class="error">El correo es obligatorio.</p>
+      }
+      @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+        <p class="error">El correo debe ser valido.</p>
+      }
+    </div>
+
+    <div>
+      <label for="password">Contrasena</label>
+      <input id="password" type="password" formControlName="password" />
+      @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+        <p class="error">La contrasena es obligatoria.</p>
+      }
+      @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+        <p class="error">La contrasena debe tener al menos 8 caracteres.</p>
+      }
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="actions">
+      <button class="primary" type="submit" [disabled]="loading()">Entrar</button>
+    </div>
+  </form>
+</section>

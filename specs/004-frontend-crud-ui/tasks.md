@@ -5,7 +5,7 @@
 
 **Tests**: Se incluyen tareas de verificacion automatizada y manual para cumplir
 gates constitucionales (build Java 17, lint/build frontend, integracion docker,
-y consistencia OpenAPI/Swagger).
+y consistencia OpenAPI/Swagger), mas evidencia medible SC-003/SC-006.
 
 **Organization**: Tasks grouped by user story for independent delivery and validation.
 
@@ -83,6 +83,8 @@ y consistencia OpenAPI/Swagger).
 - [ ] T031 [US2] Implement departamento form validation and submit states in frontend/src/app/components/departamentos/departamento-form.component.html
 - [ ] T032 [US2] Implement conflict UI for protected department delete in frontend/src/app/components/departamentos/departamento-delete-dialog.component.ts
 - [ ] T033 [US2] Register departamentos route and navigation entry in frontend/src/app/app.routes.ts
+- [ ] T051 [US2] Implement department edit conflict detection and reload-required UX for FR-014 in frontend/src/app/components/departamentos/departamento-form.component.ts
+- [ ] T052 [US2] Add conflict banner rendering for departamentos edit flow in frontend/src/app/components/departamentos/departamento-form.component.html
 
 **Checkpoint**: Departamentos CRUD + occupancy visualization + conflict policy functional.
 
@@ -115,11 +117,19 @@ y consistencia OpenAPI/Swagger).
 - [ ] T043 [P] Run frontend production build and resolve build blockers in frontend/src/
 - [ ] T044 Validate Docker local integration evidence and API version usage in specs/004-frontend-crud-ui/quickstart.md
 - [ ] T045 Perform accessibility/responsive checklist pass in frontend/src/styles/tokens.css
-- [ ] T046 Execute constitutional backend build gate with Java 17 using .\mvnw.cmd clean verify and record evidence in specs/004-frontend-crud-ui/quickstart.md
+- [ ] T046 Execute constitutional backend build gate with Java 17 using `./mvnw clean verify` and record evidence in specs/004-frontend-crud-ui/quickstart.md
 - [ ] T047 Validate Swagger/OpenAPI endpoint output against consumed contract in specs/004-frontend-crud-ui/contracts/frontend-admin-ui.openapi.yaml
 - [ ] T048 Execute UI-only acceptance run (no Postman) for empleados/departamentos flows and record evidence in specs/004-frontend-crud-ui/quickstart.md
 - [ ] T049 Document authentication exception policy (public vs protected endpoints) in specs/004-frontend-crud-ui/quickstart.md
 - [ ] T050 [P] Run frontend unit test suite and address failures in frontend/src/app/
+- [ ] T053 Define clean-environment Flyway verification procedure (empty DB bootstrap + migrations apply) in specs/004-frontend-crud-ui/quickstart.md
+- [ ] T054 Execute Flyway migration verification on clean PostgreSQL environment and record evidence in specs/004-frontend-crud-ui/quickstart.md
+- [ ] T055 Execute positive Basic Auth verification against protected endpoints (`/api/v1/empleados/**`, `/api/v1/departamentos/**`) and record pass evidence in specs/004-frontend-crud-ui/quickstart.md
+- [ ] T056 Execute negative Basic Auth verification (missing and invalid credentials) and record 401/403 evidence in specs/004-frontend-crud-ui/quickstart.md
+- [ ] T057 Execute FR-014 end-to-end verification for concurrent edit conflicts in empleados and departamentos and record evidence in specs/004-frontend-crud-ui/quickstart.md
+- [ ] T061 Measure SC-003 validation feedback latency (<2s) across invalid-data scenarios and record timestamped evidence in specs/004-frontend-crud-ui/performance-report-sc003.md
+- [ ] T062 Measure SC-006 responsive operability for 1366x768 and 390x844 with CRUD action checklist evidence in specs/004-frontend-crud-ui/performance-report-sc006.md
+- [ ] T063 Consolidate SC-003 and SC-006 measurable evidence summary and links in specs/004-frontend-crud-ui/quickstart.md
 
 ---
 

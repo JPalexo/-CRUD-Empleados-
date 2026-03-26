@@ -1,15 +1,8 @@
 package com.crudempleados.support;
 
-import com.crudempleados.domain.ClaveEmpleadoCodec;
-import com.crudempleados.model.Departamento;
-import com.crudempleados.model.Empleado;
-import com.crudempleados.repository.DepartamentoRepository;
-import com.crudempleados.repository.EmpleadoCredencialRepository;
-import com.crudempleados.repository.EmpleadoLoginEventoRepository;
-import com.crudempleados.repository.EmpleadoRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,8 +12,16 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.crudempleados.domain.ClaveEmpleadoCodec;
+import com.crudempleados.model.Departamento;
+import com.crudempleados.model.Empleado;
+import com.crudempleados.repository.DepartamentoRepository;
+import com.crudempleados.repository.EmpleadoCredencialRepository;
+import com.crudempleados.repository.EmpleadoLoginEventoRepository;
+import com.crudempleados.repository.EmpleadoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Testcontainers(disabledWithoutDocker = true)
 @SpringBootTest
@@ -31,12 +32,15 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 })
 public abstract class AbstractApiIntegrationTest {
 
-    @Container
     @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
         .withDatabaseName("empleados")
         .withUsername("empleados_app")
         .withPassword("empleados_pass");
+
+    static {
+        POSTGRES.start();
+    }
 
     @DynamicPropertySource
     static void registerDatasourceProperties(DynamicPropertyRegistry registry) {
@@ -86,6 +90,7 @@ public abstract class AbstractApiIntegrationTest {
     protected Empleado seedEmpleado(String nombre, String direccion, String telefono) {
         Empleado empleado = new Empleado();
         empleado.setClavePrefijo(ClaveEmpleadoCodec.PREFIX);
+        empleado.setClaveNumero(empleadoRepository.nextClaveNumero());
         empleado.setNombre(nombre);
         empleado.setDireccion(direccion);
         empleado.setTelefono(telefono);
@@ -96,6 +101,7 @@ public abstract class AbstractApiIntegrationTest {
         Departamento departamento = new Departamento();
         departamento.setNombre(nombre.trim());
         departamento.setNombreNormalizado(nombre.trim().toLowerCase());
+        departamento.setClaveNumero(departamentoRepository.nextClaveNumero());
         return departamentoRepository.save(departamento);
     }
 
