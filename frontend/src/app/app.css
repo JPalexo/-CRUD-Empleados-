@@ -1,0 +1,118 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.shell {
+  min-height: 100dvh;
+  padding: 1.1rem;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(13, 148, 136, 0.18), transparent 40%),
+    radial-gradient(circle at 90% 0%, rgba(249, 115, 22, 0.16), transparent 35%),
+    linear-gradient(145deg, #f3faf8 0%, #eef4fb 100%);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-soft);
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+  line-height: 1.1;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #1f3f5f;
+  background: #ecf2ff;
+  border: 1px solid #c8d7ee;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-weight: 600;
+}
+
+.menu a.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.session-strip {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.session-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.7rem;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.content-wrap {
+  margin-top: 0.8rem;
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #c2d1e9;
+  background: #edf3ff;
+  color: #1f3f5f;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 1rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    flex-direction: column;
+  }
+
+  .menu {
+    justify-content: flex-start;
+  }
+
+  .session-strip {
+    grid-template-columns: 1fr;
+  }
+}

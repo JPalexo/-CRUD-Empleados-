@@ -1,0 +1,44 @@
+<main class="shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CRUD Empleados</p>
+      <h1>Suite administrativa Angular</h1>
+    </div>
+
+    <nav class="menu">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a routerLink="/admin-access" routerLinkActive="active">Acceso admin</a>
+      <a routerLink="/empleados" routerLinkActive="active">Empleados</a>
+      <a routerLink="/departamentos" routerLinkActive="active">Departamentos</a>
+      <a routerLink="/employee-login" routerLinkActive="active">Login empleado</a>
+    </nav>
+  </header>
+
+  <section class="session-strip">
+    <div class="session-card">
+      <strong>Admin:</strong>
+      @if (adminCredentials()) {
+        <span>{{ adminCredentials()?.username }}</span>
+        <button type="button" class="btn" (click)="clearAdminSession()">Cerrar admin</button>
+      } @else {
+        <span>sin sesion</span>
+      }
+    </div>
+
+    <div class="session-card">
+      <strong>Empleado:</strong>
+      @if (employeeIdentity()) {
+        <span>{{ employeeIdentity()?.clave }} - {{ employeeIdentity()?.nombre }}</span>
+        <button type="button" class="btn" (click)="clearEmployeeSession()">Limpiar empleado</button>
+      } @else {
+        <span>sin sesion</span>
+      }
+    </div>
+  </section>
+
+  <section class="content-wrap">
+    <router-outlet />
+  </section>
+
+  <footer class="footer">{{ currentYear }} - Implementacion completa de UI CRUD</footer>
+</main>

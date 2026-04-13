@@ -1,0 +1,56 @@
+.panel {
+  max-width: 580px;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-soft);
+  padding: 1.2rem;
+}
+
+header h1 {
+  margin: 0.35rem 0;
+}
+
+header p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-strong);
+}
+
+.form-grid {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.feedback {
+  margin: 0.8rem 0 0;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+}
+
+.feedback.ok {
+  background: #e7f8ee;
+  color: #0d5b2d;
+  border: 1px solid #94d7ad;
+}
+
+.feedback.error {
+  background: #ffebeb;
+  color: #8f1f1f;
+  border: 1px solid #f3acac;
+}

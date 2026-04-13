@@ -1,0 +1,73 @@
+<section class="layout">
+  <article class="panel">
+    <header>
+      <p class="eyebrow">Spec 003</p>
+      <h1>Departamentos</h1>
+      <p>CRUD completo con ocupacion y paginacion.</p>
+    </header>
+
+    <form [formGroup]="createForm" (ngSubmit)="create()" class="inline-form">
+      <input type="text" placeholder="Nombre del departamento" formControlName="nombre" />
+      <button type="submit" class="btn primary" [disabled]="loading()">Crear</button>
+    </form>
+
+    @if (errorMessage()) {
+      <p class="feedback error">{{ errorMessage() }}</p>
+    }
+  </article>
+
+  <article class="panel table-panel">
+    <div class="table-meta">
+      <p>Total: {{ totalElements() }} departamentos</p>
+      <div class="pager">
+        <button type="button" class="btn" (click)="previousPage()" [disabled]="page() === 0 || loading()">Anterior</button>
+        <span>Pagina {{ page() + 1 }} de {{ totalPages() === 0 ? 1 : totalPages() }}</span>
+        <button type="button" class="btn" (click)="nextPage()" [disabled]="page() + 1 >= totalPages() || loading()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Clave</th>
+            <th>Nombre</th>
+            <th>Ocupacion</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (departamento of departamentos(); track departamento.clave) {
+            <tr>
+              <td>{{ departamento.clave }}</td>
+              <td>
+                @if (editingClave() === departamento.clave) {
+                  <input type="text" [formControl]="editForm.controls.nombre" />
+                } @else {
+                  {{ departamento.nombre }}
+                }
+              </td>
+              <td>
+                {{ departamento.ocupacionActual }}/{{ departamento.capacidadMaxima }}
+                ({{ departamento.porcentajeOcupacion | number: '1.0-0' }}%)
+              </td>
+              <td class="actions">
+                @if (editingClave() === departamento.clave) {
+                  <button type="button" class="btn primary" (click)="saveEdit(departamento.clave)">Guardar</button>
+                  <button type="button" class="btn" (click)="cancelEdit()">Cancelar</button>
+                } @else {
+                  <button type="button" class="btn" (click)="startEdit(departamento)">Editar</button>
+                }
+                <button type="button" class="btn danger" (click)="remove(departamento.clave)">Eliminar</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="empty">No hay departamentos registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,108 @@
+<section class="layout">
+  <article class="panel">
+    <header>
+      <p class="eyebrow">Specs 001 + 002</p>
+      <h1>Empleados</h1>
+      <p>CRUD administrativo con alta de credenciales para login simbolico.</p>
+    </header>
+
+    <form [formGroup]="createForm" (ngSubmit)="create()" class="create-grid">
+      <input type="text" placeholder="Nombre" formControlName="nombre" />
+      <input type="text" placeholder="Direccion" formControlName="direccion" />
+      <input type="text" placeholder="Telefono" formControlName="telefono" />
+      <input type="email" placeholder="Email" formControlName="email" />
+      <input type="password" placeholder="Contrasena" formControlName="password" />
+
+      <select formControlName="departamentoClave">
+        <option value="">Selecciona departamento</option>
+        @for (departamento of departamentos(); track departamento.clave) {
+          <option [value]="departamento.clave">{{ departamento.clave }} - {{ departamento.nombre }}</option>
+        }
+      </select>
+
+      <button type="submit" class="btn primary" [disabled]="loading()">Crear empleado</button>
+    </form>
+
+    @if (errorMessage()) {
+      <p class="feedback error">{{ errorMessage() }}</p>
+    }
+  </article>
+
+  <article class="panel table-panel">
+    <div class="table-meta">
+      <p>Total: {{ totalElements() }} empleados</p>
+      <div class="pager">
+        <button type="button" class="btn" (click)="previousPage()" [disabled]="page() === 0 || loading()">Anterior</button>
+        <span>Pagina {{ page() + 1 }} de {{ totalPages() === 0 ? 1 : totalPages() }}</span>
+        <button type="button" class="btn" (click)="nextPage()" [disabled]="page() + 1 >= totalPages() || loading()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Clave</th>
+            <th>Nombre</th>
+            <th>Direccion</th>
+            <th>Telefono</th>
+            <th>Departamento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (empleado of empleados(); track empleado.clave) {
+            <tr>
+              <td>{{ empleado.clave }}</td>
+              <td>
+                @if (editingClave() === empleado.clave) {
+                  <input type="text" [formControl]="editForm.controls.nombre" />
+                } @else {
+                  {{ empleado.nombre }}
+                }
+              </td>
+              <td>
+                @if (editingClave() === empleado.clave) {
+                  <input type="text" [formControl]="editForm.controls.direccion" />
+                } @else {
+                  {{ empleado.direccion }}
+                }
+              </td>
+              <td>
+                @if (editingClave() === empleado.clave) {
+                  <input type="text" [formControl]="editForm.controls.telefono" />
+                } @else {
+                  {{ empleado.telefono }}
+                }
+              </td>
+              <td>
+                @if (editingClave() === empleado.clave) {
+                  <select [formControl]="editForm.controls.departamentoClave">
+                    @for (departamento of departamentos(); track departamento.clave) {
+                      <option [value]="departamento.clave">{{ departamento.clave }}</option>
+                    }
+                  </select>
+                } @else {
+                  {{ empleado.departamentoClave }}
+                }
+              </td>
+              <td class="actions">
+                @if (editingClave() === empleado.clave) {
+                  <button type="button" class="btn primary" (click)="saveEdit(empleado.clave)">Guardar</button>
+                  <button type="button" class="btn" (click)="cancelEdit()">Cancelar</button>
+                } @else {
+                  <button type="button" class="btn" (click)="startEdit(empleado)">Editar</button>
+                }
+                <button type="button" class="btn danger" (click)="remove(empleado.clave)">Eliminar</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty">No hay empleados registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>

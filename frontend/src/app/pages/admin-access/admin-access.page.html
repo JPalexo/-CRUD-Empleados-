@@ -1,0 +1,31 @@
+<section class="panel">
+  <header>
+    <p class="eyebrow">Canal Administrativo</p>
+    <h1>Validar Basic Auth</h1>
+    <p>Ingresa usuario y contrasena para habilitar CRUD de empleados y departamentos.</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <label>
+      Usuario
+      <input type="text" formControlName="username" autocomplete="username" />
+    </label>
+
+    <label>
+      Contrasena
+      <input type="password" formControlName="password" autocomplete="current-password" />
+    </label>
+
+    <button type="submit" class="btn primary" [disabled]="loading()">
+      {{ loading() ? 'Validando...' : 'Guardar sesion admin' }}
+    </button>
+  </form>
+
+  @if (errorMessage()) {
+    <p class="feedback error">{{ errorMessage() }}</p>
+  }
+
+  @if (successMessage()) {
+    <p class="feedback ok">{{ successMessage() }}</p>
+  }
+</section>
