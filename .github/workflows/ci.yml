@@ -106,8 +106,8 @@ jobs:
           echo "Backend did not become ready in time"
           exit 1
 
-      - name: Run Cypress smoke test
-        run: npx --yes cypress run --config baseUrl=http://localhost:8081 --spec cypress/e2e/smoke.cy.js
+      - name: Run Cypress smoke and login tests
+        run: npx --yes cypress run --config baseUrl=http://localhost:8081 --spec cypress/e2e/smoke.cy.js,cypress/e2e/login.cy.js
 
       - name: Print docker logs on failure
         if: failure()
