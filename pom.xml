@@ -18,8 +18,8 @@
     <description>CRUD de empleados con Spring Boot y PostgreSQL</description>
 
     <properties>
-        <java.version>25</java.version>
-        <springdoc.version>2.8.0</springdoc.version>
+        <java.version>21</java.version>
+        <springdoc.version>2.6.0</springdoc.version>
         <testcontainers.version>1.20.3</testcontainers.version>
     </properties>
 
@@ -94,7 +94,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>25</release>
+                    <release>21</release>
                 </configuration>
             </plugin>
             <plugin>
