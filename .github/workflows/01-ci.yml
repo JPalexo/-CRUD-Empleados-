@@ -1,0 +1,33 @@
+name: 01-CI
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Ensure Maven Wrapper is executable
+        run: chmod +x mvnw
+
+      - name: Verify Docker is available
+        run: docker version
+
+      - name: Build and test with Maven
+        run: ./mvnw clean verify

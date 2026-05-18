@@ -12,6 +12,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.crudempleados.domain.ClaveEmpleadoCodec;
@@ -32,17 +33,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 })
 public abstract class AbstractApiIntegrationTest {
 
+    @Container
     @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
         .withDatabaseName("empleados")
         .withUsername("empleados_app")
         .withPassword("empleados_pass");
-
-    static {
-        // Keep one container instance alive for the whole test JVM to avoid
-        // stale Spring context datasource ports across test classes.
-        POSTGRES.start();
-    }
 
     @DynamicPropertySource
     static void registerDatasourceProperties(DynamicPropertyRegistry registry) {
