@@ -3,7 +3,7 @@ name: 01-CI
 on:
   push:
     branches:
-      - master
+      - main
 
 permissions:
   contents: read
@@ -30,4 +30,4 @@ jobs:
         run: docker version
 
       - name: Build and test with Maven
-        run: ./mvnw clean verify
+        run: ./mvnw clean test
